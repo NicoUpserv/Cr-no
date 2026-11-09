@@ -22,6 +22,8 @@ export const icones = {
   calendrier: { ios: 'calendar', android: 'calendar_month', web: 'calendar_month' },
   horloge: { ios: 'clock', android: 'schedule', web: 'schedule' },
   route: { ios: 'road.lanes', android: 'road', web: 'road' },
+  supprimer: { ios: 'trash', android: 'delete', web: 'delete' },
+  ajouter: { ios: 'plus.circle.fill', android: 'add_circle', web: 'add_circle' },
 } as const satisfies Record<string, NomSymbole>;
 
 export type NomIcone = keyof typeof icones;

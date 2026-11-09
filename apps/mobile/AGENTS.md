@@ -37,7 +37,7 @@ src/
 L'application doit avoir l'air d'une **vraie application native**, pas d'une appli générée par IA.
 
 1. **Aucune couleur, taille ou police en dur** dans `src/app` et `src/features`. Couleurs via `useTheme().couleurs`, texte via `<Texte variante="…">`. Le lint bloque les écarts.
-2. **Composants natifs uniquement** : listes groupées (`Section` + `Ligne`), barre de navigation native (`<Stack.Screen options={{ title }} />`), recherche native (`headerSearchBarOptions`), `Switch`, `TextInput`, `Pressable`. Pas de bouton ou de carte « maison ».
+2. **Composants natifs uniquement** : listes groupées (`Section` + `Ligne`), barre de navigation native (`<Stack.Screen options={{ title }} />`), recherche native (`headerSearchBarOptions`), `Switch`, `TextInput`, `Pressable`, et `ChoixMenu` pour tout choix parmi quelques valeurs (jour, motif, permis…). Pas de bouton ou de carte « maison », pas de choix « appuyer pour faire défiler ».
 3. **Chaque signe routier a un seul rôle** :
    - `PanneauDirection` → uniquement la prochaine leçon ;
    - `BandeProgression` → uniquement la progression C1 à C4 ;
