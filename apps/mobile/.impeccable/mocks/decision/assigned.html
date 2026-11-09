@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Carte routière — fiche élève</title>
+<style>
+:root{--ground:#FBFBF8;--land:#E9EFE6;--red:#C8102E;--yellow:#F2B705;--ink:#1F2A33;--ink2:#56626C;--line:#D5DAD8;--water:#3E7CB1;--amber:#B26A00;--amberbg:#FFF4DC}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:390px;height:844px;overflow:hidden;background:var(--ground);color:var(--ink);font:17px/1.3 -apple-system,"SF Pro Text",Roboto,system-ui,sans-serif}
+.cond{font-family:"Barlow Condensed","Roboto Condensed","Arial Narrow",sans-serif;font-stretch:condensed}
+.status{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px;font-weight:600;font-size:16px}
+.nav{display:flex;justify-content:space-between;padding:6px 16px;color:var(--red);font-size:17px}
+h1{font-size:34px;font-weight:700;letter-spacing:.2px;padding:2px 16px 0}
+.meta{display:flex;align-items:center;gap:10px;padding:8px 16px 14px;color:var(--ink2);font-size:15px}
+.cart{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:24px;padding:0 6px;border-radius:5px;font-weight:700;font-size:17px;line-height:1}
+.cart.b{background:var(--red);color:#fff;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--red)}
+.cart.l{background:var(--yellow);color:var(--ink);border:1.5px solid var(--ink)}
+.lnum{font-size:22px;font-weight:700;color:var(--ink)}
+.route{margin:0 16px;background:var(--land);border-radius:12px;padding:14px 14px 12px}
+.route .lbl{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);text-transform:uppercase;letter-spacing:.6px}
+.road{position:relative;height:46px;margin-top:8px}
+.road .band{position:absolute;left:0;right:0;top:19px;height:8px;border-radius:4px;background:#fff;border:1.5px solid #9AA5A0}
+.road .done{position:absolute;left:0;top:19px;height:8px;width:58%;border-radius:4px;background:var(--red)}
+.borne{position:absolute;top:8px;width:30px;text-align:center;font-size:15px;font-weight:700}
+.borne span{display:block;margin:0 auto;width:30px;height:30px;line-height:28px;border-radius:15px 15px 4px 4px;background:#fff;border:1.5px solid var(--ink)}
+.borne.ok span{background:var(--ink);color:#fff}
+.here{position:absolute;left:58%;top:0;transform:translateX(-50%);width:14px;height:14px;border-radius:7px;background:var(--water);border:3px solid #fff;box-shadow:0 0 0 1.5px var(--water);top:16px}
+.route .sub{margin-top:6px;font-size:14px;color:var(--ink)}
+.alert{margin:14px 16px 0;background:var(--amberbg);border-radius:12px;padding:12px 14px;display:flex;gap:10px}
+.alert b{display:block;font-size:15px;color:var(--amber)}
+.alert span{font-size:15px}
+.sec{padding:20px 16px 6px;font-size:13px;color:var(--ink2);text-transform:uppercase;letter-spacing:.6px}
+.group{margin:0 16px;background:#fff;border-radius:12px;overflow:hidden}
+.row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:.5px solid var(--line);font-size:16px}
+.row:last-child{border-bottom:0}
+.row small{display:block;color:var(--ink2);font-size:14px}
+.chev{color:#B8C0C4}
+.leg{display:flex;align-items:stretch;gap:10px}
+.leg .line{width:4px;border-radius:2px;background:linear-gradient(var(--yellow),var(--yellow))}
+.tab{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(251,251,248,.94);border-top:.5px solid var(--line);display:flex;justify-content:space-around;padding-top:8px;font-size:11px;color:#8A949A}
+.tab .on{color:var(--red)}
+.tab div{text-align:center}.tab i{display:block;width:26px;height:22px;margin:0 auto 3px;border-radius:6px;background:currentColor;opacity:.25}
+.tab .on i{opacity:1}
+</style></head><body>
+<div class="status"><span>9:41</span><span>▮▮▮ ◔</span></div>
+<div class="nav"><span>‹ Élèves</span><span>Modifier</span></div>
+<h1>Lina Morel</h1>
+<div class="meta"><span class="cart b cond">B</span><span>Traditionnel</span><span>·</span><span class="cond lnum">Leçon 14</span><span>/ 20</span></div>
+<div class="route">
+  <div class="lbl cond"><span>Itinéraire de formation</span><span>C3 en cours</span></div>
+  <div class="road">
+    <div class="band"></div><div class="done"></div>
+    <div class="borne ok cond" style="left:0"><span>C1</span></div>
+    <div class="borne ok cond" style="left:calc(33% - 15px)"><span>C2</span></div>
+    <div class="borne cond" style="left:calc(66% - 15px)"><span>C3</span></div>
+    <div class="borne cond" style="right:0"><span>C4</span></div>
+    <div class="here"></div>
+  </div>
+  <div class="sub">Circuler dans des conditions difficiles · 3 sous-compétences sur 7</div>
+</div>
+<div class="alert"><div><b>Cours non consulté</b><span>« Insertion sur voie rapide » — prévu pour demain 14 h</span></div></div>
+<div class="sec cond">Prochaine leçon</div>
+<div class="group">
+  <div class="row"><div class="leg"><div class="line"></div><div><span class="cart l cond">L15</span> Mar. 12 nov. · 14:00 → 15:00<small>Départ Gare d'Aix-TGV · Arrivée Lycée Zola</small></div></div><span class="chev">›</span></div>
+</div>
+<div class="sec cond">Dossier</div>
+<div class="group">
+  <div class="row"><div>Pièces du dossier<small>2 documents manquants</small></div><span class="chev">›</span></div>
+  <div class="row"><div>Observations<small>Dernière : 8 nov. · visible par l'élève</small></div><span class="chev">›</span></div>
+  <div class="row"><div>Livret d'apprentissage</div><span class="chev">›</span></div>
+</div>
+<div class="tab"><div class="on"><i></i>Aujourd'hui</div><div><i></i>Élèves</div><div><i></i>Planning</div><div><i></i>Parcours</div><div><i></i>Plus</div></div>
+</body></html>

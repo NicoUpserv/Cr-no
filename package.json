@@ -1,0 +1,13 @@
+{
+  "name": "creno",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "mobile": "pnpm --filter @creno/mobile start",
+    "web": "pnpm --filter @creno/mobile web",
+    "lint": "pnpm --filter @creno/mobile lint",
+    "typecheck": "pnpm --filter @creno/mobile typecheck",
+    "test": "pnpm --filter @creno/mobile test",
+    "check": "pnpm --filter @creno/mobile check"
+  }
+}

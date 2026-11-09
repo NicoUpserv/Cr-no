@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Créno — comparaison des directions</title>
+<style>
+:root{--ink:#14181F;--ink2:#5B6472;--bg:#EEF0F3;--blue:#1D4E9E}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,"Segoe UI",Roboto,system-ui,sans-serif;padding:28px 16px 60px}
+h1{font-size:26px;max-width:1100px;margin:0 auto 6px}
+p.lead{max-width:1100px;margin:0 auto 26px;color:var(--ink2)}
+h2{max-width:1100px;margin:30px auto 12px;font-size:19px}
+.row{display:flex;gap:22px;overflow-x:auto;padding:4px 4px 16px;max-width:1100px;margin:0 auto}
+figure{flex:0 0 auto}
+.phone{width:390px;height:844px;border-radius:38px;overflow:hidden;background:#fff;box-shadow:0 0 0 10px #1A1C20,0 18px 40px rgba(0,0,0,.18);margin:10px}
+.phone iframe{width:390px;height:844px;border:0;display:block}
+figcaption{margin:18px 10px 0;max-width:390px}
+figcaption b{display:block;font-size:17px}
+figcaption span{color:var(--ink2);font-size:14px}
+.reco figcaption b{color:var(--blue)}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;background:var(--blue);color:#fff;border-radius:4px;padding:2px 7px;margin-bottom:6px}
+</style></head><body>
+<h1>Créno : comparer les directions côte à côte</h1>
+<p class="lead">Même écran pour toutes, à taille réelle de téléphone : la fiche élève vue par le moniteur. Faites défiler horizontalement chaque rangée.</p>
+
+<h2>Proposition : « La route », qui réunit vos cinq favorites</h2>
+<div class="row">
+  <figure class="reco"><div class="phone"><iframe src="fusion-fiche.html" title="La route, fiche élève"></iframe></div>
+    <figcaption><span class="tag">Recommandé</span><b>La route : fiche élève</b><span>Panneau directionnel pour la prochaine leçon, lignes de chaussée pour C1 à C4, tampon sur les compétences acquises, numéro de leçon en cartouche (carte routière), jaune réservé à ce qui demande attention.</span></figcaption></figure>
+  <figure class="reco"><div class="phone"><iframe src="fusion-journee.html" title="La route, journée du moniteur"></iframe></div>
+    <figcaption><span class="tag">Recommandé</span><b>La route : journée du moniteur</b><span>Le même univers sur un autre écran : la journée en colonnes de fiche horaire, la leçon en cours surlignée, le créneau libre avec sa liste d'attente.</span></figcaption></figure>
+</div>
+
+<h2>Vos cinq favorites, séparément</h2>
+<div class="row">
+  <figure><div class="phone"><iframe src="assigned.html" title="La carte routière"></iframe></div><figcaption><b>La carte routière</b><span>La progression comme un itinéraire avec bornes.</span></figcaption></figure>
+  <figure><div class="phone"><iframe src="pick.html" title="Le livret tamponné"></iframe></div><figcaption><b>Le livret tamponné</b><span>La grille de compétences validée au tampon.</span></figcaption></figure>
+  <figure><div class="phone"><iframe src="safe-sign.html" title="Le panneau directionnel"></iframe></div><figcaption><b>Le panneau directionnel</b><span>Natif et sobre, la prochaine leçon en panneau bleu.</span></figcaption></figure>
+  <figure><div class="phone"><iframe src="safe-timetable.html" title="La fiche horaire"></iframe></div><figcaption><b>La fiche horaire</b><span>Les leçons en colonnes, la prochaine surlignée.</span></figcaption></figure>
+  <figure><div class="phone"><iframe src="safe-markings.html" title="Les lignes de chaussée"></iframe></div><figcaption><b>Les lignes de chaussée</b><span>Discontinue = en cours, continue = acquise.</span></figcaption></figure>
+</div>
+</body></html>

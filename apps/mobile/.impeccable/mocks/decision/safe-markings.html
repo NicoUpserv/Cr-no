@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Lignes de chaussée — fiche élève</title>
+<style>
+:root{--asphalt:#2B2F33;--yellow:#F2C230;--ink:#15181B;--ink2:#5E646B;--n1:#F5F5F3;--n2:#E4E4E0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:390px;height:844px;overflow:hidden;background:var(--n1);color:var(--ink);font:17px/1.3 -apple-system,"SF Pro Text",Roboto,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.status{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px;font-weight:600;font-size:16px}
+.nav{display:flex;justify-content:space-between;padding:6px 16px;color:var(--ink)}
+h1{font-size:34px;font-weight:700;padding:2px 16px 0}
+.meta{padding:2px 16px 14px;color:var(--ink2);font-size:15px}
+.lanes{margin:0 16px;background:var(--asphalt);border-radius:12px;padding:14px 16px}
+.lane{display:flex;align-items:center;gap:12px;padding:7px 0;color:#fff;font-size:15px}
+.lane b{width:26px;font-size:15px}
+.lane .l{flex:1;height:5px}
+.solid{background:#fff}
+.dash{background:repeating-linear-gradient(90deg,#fff 0 22px,transparent 22px 36px)}
+.part{background:linear-gradient(90deg,#fff 0 43%,transparent 43%),repeating-linear-gradient(90deg,#fff 0 22px,transparent 22px 36px)}
+.faint{background:repeating-linear-gradient(90deg,rgba(255,255,255,.3) 0 22px,transparent 22px 36px)}
+.lane span{width:44px;text-align:right;color:#C9CDD1;font-size:14px}
+.alert{margin:12px 16px 0;background:var(--yellow);border-radius:12px;padding:12px 14px;color:var(--ink)}
+.alert b{display:block;font-size:16px}
+.alert small{font-size:14px}
+.sec{padding:18px 16px 6px;font-size:13px;color:var(--ink2);text-transform:uppercase;letter-spacing:.6px}
+.group{margin:0 16px;background:#fff;border-radius:12px;overflow:hidden}
+.row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:.5px solid var(--n2);font-size:16px}
+.row:last-child{border-bottom:0}
+.row small{display:block;color:var(--ink2);font-size:14px}
+.chev{color:#BFC2C6}
+.tab{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(255,255,255,.96);border-top:.5px solid var(--n2);display:flex;justify-content:space-around;padding-top:8px;font-size:11px;color:#8E9399}
+.tab .on{color:var(--ink)}.tab div{text-align:center}.tab i{display:block;width:26px;height:22px;margin:0 auto 3px;border-radius:6px;background:currentColor;opacity:.25}.tab .on i{opacity:1}
+</style></head><body>
+<div class="status"><span>9:41</span><span>▮▮▮ ◔</span></div>
+<div class="nav"><span>‹ Élèves</span><span>Modifier</span></div>
+<h1>Lina Morel</h1>
+<div class="meta">Permis B traditionnel · Leçon 14 / 20</div>
+<div class="lanes">
+  <div class="lane"><b>C1</b><div class="l solid"></div><span>acquis</span></div>
+  <div class="lane"><b>C2</b><div class="l solid"></div><span>acquis</span></div>
+  <div class="lane"><b>C3</b><div class="l part"></div><span>3 / 7</span></div>
+  <div class="lane"><b>C4</b><div class="l faint"></div><span>—</span></div>
+</div>
+<div class="alert"><b>Cours non consulté</b><small>Insertion sur voie rapide · leçon aujourd'hui 14:00</small></div>
+<div class="sec">Prochaine leçon</div>
+<div class="group"><div class="row"><div>Aujourd'hui · 14:00 → 15:00<small>Gare d'Aix-TGV → Lycée Zola</small></div><span class="chev">›</span></div></div>
+<div class="sec">Dossier</div>
+<div class="group"><div class="row"><div>Pièces<small>2 documents manquants</small></div><span class="chev">›</span></div><div class="row"><div>Observations</div><span class="chev">›</span></div></div>
+<div class="tab"><div class="on"><i></i>Aujourd'hui</div><div><i></i>Élèves</div><div><i></i>Planning</div><div><i></i>Parcours</div><div><i></i>Plus</div></div>
+</body></html>

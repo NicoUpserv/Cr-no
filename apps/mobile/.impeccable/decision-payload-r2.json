@@ -1,0 +1,60 @@
+{
+  "title": "Créno — choisir l'univers visuel (série plus sage)",
+  "question": "Trois directions sobres, proches du natif iOS/Android, chacune avec une seule signature. Ou le standard du secteur.",
+  "options": [
+    {
+      "id": "safe-sign",
+      "kind": "grounded",
+      "label": "Le panneau directionnel",
+      "lineage": "Panneaux de direction routiers français : cartouche bleu, liseré blanc, flèche et destination",
+      "thesis": "Une appli native et sobre ; seule la prochaine leçon s'affiche comme un panneau de direction : flèche, lieu, heure.",
+      "palette": ["#FFFFFF", "#F4F6F9", "#1D4E9E", "#14181F", "#C62828"],
+      "materials": ["cartouche bleu à liseré blanc", "listes natives", "chiffres tabulaires"],
+      "viewport": "Titre natif, panneau bleu « → Gare d'Aix-TGV · 14:00 » pour la prochaine leçon, puis progression, alerte et listes natives.",
+      "risk": "Sage : la personnalité tient dans un seul élément ; s'il est mal exécuté, l'appli redevient générique.",
+      "html": ".impeccable/mocks/decision/safe-sign.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "safe-timetable",
+      "kind": "grounded",
+      "label": "La fiche horaire",
+      "lineage": "Fiches horaires de bus et de car : colonnes d'heures alignées, ligne en cours surlignée",
+      "thesis": "Les leçons se lisent comme un horaire : heures alignées en colonnes, la ligne en cours surlignée.",
+      "palette": ["#FFFFFF", "#F3F5F4", "#0F6E5C", "#E7F2EF", "#16201D", "#B4471F"],
+      "materials": ["colonnes d'horaires", "bande de surlignage", "chiffres tabulaires"],
+      "viewport": "Titre natif, bloc « Prochaines leçons » en colonnes heure / leçon / lieu avec la prochaine surlignée, puis progression et listes natives.",
+      "risk": "Très lisible mais peu marquant : convient au moniteur et à la direction, moins « waouh » pour l'élève.",
+      "html": ".impeccable/mocks/decision/safe-timetable.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "safe-markings",
+      "kind": "grounded",
+      "label": "Les lignes de chaussée",
+      "lineage": "Marquages au sol : ligne discontinue, ligne continue, marquage jaune de chantier",
+      "thesis": "La progression est une ligne de chaussée : discontinue tant que la compétence est en cours, continue une fois acquise ; le jaune signale ce qui demande attention.",
+      "palette": ["#F5F5F3", "#FFFFFF", "#2B2F33", "#F2C230", "#15181B", "#8A9097"],
+      "materials": ["ligne discontinue / continue", "jaune de signalisation temporaire", "fond bitume clair"],
+      "viewport": "Titre natif, quatre lignes C1 à C4 (continues ou discontinues selon l'avancement), alerte en jaune, prochaine leçon et listes natives.",
+      "risk": "Le jaune doit rester réservé aux alertes ; mal dosé, il fatigue l'œil.",
+      "html": ".impeccable/mocks/decision/safe-markings.html",
+      "htmlFrame": "390x844"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "code"},
+  "canon": true,
+  "canonCard": {
+    "kind": "canon",
+    "label": "Le standard du secteur",
+    "thesis": "Une appli iOS/Android classique, au niveau de finition de Stych, Ornikar et En Voiture Simone.",
+    "palette": ["#FFFFFF", "#F2F2F7", "#111111", "#0A6CFF"],
+    "materials": ["listes groupées", "avatar rond", "teinte unique"],
+    "viewport": "Titre, avatar, onglets segmentés, listes groupées.",
+    "risk": "Impossible à distinguer de la concurrence, par construction.",
+    "html": ".impeccable/mocks/decision/safe-canon.html",
+    "htmlFrame": "390x844"
+  },
+  "steer": true
+}

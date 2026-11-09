@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Panneau de toit — fiche élève</title>
+<style>
+:root{--tint:#0B3D91;--plate:#FFFFFF;--red:#D52B1E;--lit:#FFF1C2;--ink:#14171A;--ink2:#5A626C;--n1:#F4F5F7;--n2:#E6E8EC;--n3:#C9CED6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:390px;height:844px;overflow:hidden;background:var(--n1);color:var(--ink);font:17px/1.3 -apple-system,"SF Pro Text",Roboto,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.cond{font-family:"Barlow Condensed","Roboto Condensed","Arial Narrow",sans-serif;font-stretch:condensed}
+.shell{background:var(--tint);color:#fff;padding:0 0 26px}
+.status{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px;font-weight:600;font-size:16px}
+.nav{display:flex;justify-content:space-between;padding:6px 16px;font-size:17px;color:#DCE6FF}
+.ae{padding:6px 16px 14px;font-size:13px;letter-spacing:.8px;text-transform:uppercase;color:#B9C8EE}
+.plate{margin:0 22px;position:relative;height:64px}
+.plate .body{position:absolute;inset:0 18px;background:var(--lit);display:flex;align-items:center;justify-content:center;gap:12px;border-top:3px solid var(--red);border-bottom:3px solid var(--red)}
+.plate::before,.plate::after{content:"";position:absolute;top:0;bottom:0;width:20px;background:var(--lit);border-top:3px solid var(--red);border-bottom:3px solid var(--red)}
+.plate::before{left:0;clip-path:polygon(100% 0,100% 100%,0 100%,30% 0)}
+.plate::after{right:0;clip-path:polygon(0 0,70% 0,100% 100%,0 100%)}
+.plate .name{font-size:30px;font-weight:800;letter-spacing:1px;color:var(--ink)}
+.plate .cat{font-size:22px;font-weight:800;color:#fff;background:var(--red);padding:0 8px;border-radius:3px}
+.live{text-align:center;margin-top:10px;font-size:14px;color:#FFE59A;font-weight:600}
+.card{margin:-14px 16px 0;background:#fff;border-radius:14px;padding:14px 16px;position:relative}
+.seq{display:flex;align-items:baseline;gap:8px}
+.seq b{font-size:34px;font-weight:800}
+.seq span{color:var(--ink2);font-size:16px}
+.ticks{display:grid;grid-template-columns:repeat(20,1fr);gap:3px;margin-top:10px}
+.ticks i{height:8px;background:var(--n2);border-radius:1px}
+.ticks i.d{background:var(--ink)}
+.ticks i.n{background:var(--red)}
+.comp{display:flex;justify-content:space-between;margin-top:8px;font-size:14px;color:var(--ink2)}
+.alert{margin:12px 16px 0;background:#fff;border-radius:14px;padding:12px 16px;border-left:4px solid var(--red)}
+.alert b{display:block;font-size:16px}
+.alert small{display:block;color:var(--ink2);font-size:14px;margin-top:2px}
+.sec{padding:18px 16px 6px;font-size:13px;color:var(--ink2);text-transform:uppercase;letter-spacing:.6px}
+.group{margin:0 16px;background:#fff;border-radius:14px;overflow:hidden}
+.row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:.5px solid var(--n2);font-size:16px}
+.row:last-child{border-bottom:0}
+.row small{display:block;color:var(--ink2);font-size:14px}
+.chev{color:var(--n3)}
+.tab{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(255,255,255,.96);border-top:.5px solid var(--n2);display:flex;justify-content:space-around;padding-top:8px;font-size:11px;color:#8A929B}
+.tab .on{color:var(--tint)}.tab div{text-align:center}.tab i{display:block;width:26px;height:22px;margin:0 auto 3px;border-radius:6px;background:currentColor;opacity:.25}.tab .on i{opacity:1}
+</style></head><body>
+<div class="shell">
+  <div class="status"><span>9:41</span><span>▮▮▮ ◔</span></div>
+  <div class="nav"><span>‹ Élèves</span><span>Modifier</span></div>
+  <div class="ae">Auto-école du Cours · Aix</div>
+  <div class="plate"><div class="body"><span class="cond name">LINA MOREL</span><span class="cond cat">B</span></div></div>
+  <div class="live">Leçon dans 35 min · Gare d'Aix-TGV</div>
+</div>
+<div class="card">
+  <div class="seq"><b class="cond">Leçon 14</b><span>sur 20 · forfait B</span></div>
+  <div class="ticks"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="n"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="comp"><span>Compétence 3 en cours</span><span>3 / 7 sous-compétences</span></div>
+</div>
+<div class="alert"><b>Cours non consulté : Insertion sur voie rapide</b><small>Envoyé le 10 nov. · ouvert 0 fois · leçon aujourd'hui 14:00</small></div>
+<div class="sec">Prochaine leçon</div>
+<div class="group"><div class="row"><div>Aujourd'hui · 14:00 → 15:00<small>Départ Gare d'Aix-TGV · Arrivée Lycée Zola</small></div><span class="chev">›</span></div></div>
+<div class="sec">Dossier</div>
+<div class="group"><div class="row"><div>Pièces<small>2 documents manquants</small></div><span class="chev">›</span></div><div class="row"><div>Observations</div><span class="chev">›</span></div></div>
+<div class="tab"><div class="on"><i></i>Aujourd'hui</div><div><i></i>Élèves</div><div><i></i>Planning</div><div><i></i>Parcours</div><div><i></i>Plus</div></div>
+</body></html>

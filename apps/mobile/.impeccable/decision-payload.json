@@ -1,0 +1,123 @@
+{
+  "title": "Créno — choisir l'univers visuel",
+  "question": "Premier écran : la fiche élève vue par l'enseignant. Garde la direction tirée, prends une alternative, ou relance.",
+  "options": [
+    {
+      "id": "assigned",
+      "kind": "assigned",
+      "label": "La carte routière",
+      "kicker": "THE ROLL",
+      "lineage": "Cartes routières papier pliées : classes de routes en couleur, numéros en cartouche, bornes kilométriques",
+      "thesis": "La progression de l'élève se lit comme un itinéraire : des étapes numérotées, une route, une position.",
+      "palette": ["#FBFBF8", "#E9EFE6", "#C8102E", "#F2B705", "#1F2A33", "#3E7CB1"],
+      "materials": ["cartouches de numéros de route", "bandes de route tracées", "bornes kilométriques", "condensé de légende de carte"],
+      "viewport": "Titre natif « Lina Morel », cartouche B et « Leçon 14 / 20 », bande d'itinéraire C1 → C4 avec la position de l'élève, alerte « cours non consulté », prochaine leçon avec départ et arrivée, puis listes groupées natives.",
+      "risk": "Peut tourner au déguisement « carte » si la bande et les cartouches débordent sur les écrans de gestion ; on les réserve aux moments de progression et de parcours.",
+      "raised": [
+        {"from": "challenger-exposure", "raise": "Neutres calés sur une rampe tonale stricte de 9 pas : aucun gris choisi au hasard."},
+        {"from": "challenger-catalog", "raise": "Chaque leçon porte son numéro dans la séquence (Leçon 14 / 20) : le numéro est le titre."},
+        {"from": "challenger-folio", "raise": "La progression C1 à C4 toujours dessinée à la même échelle, comparable d'un élève à l'autre."},
+        {"from": "challenger-metro", "raise": "La hiérarchie passe par l'échelle typographique, pas par des cadres ni des bordures décoratives."},
+        {"from": "challenger-laban", "raise": "Durée = longueur : sur la bande du jour, chaque leçon est dessinée proportionnelle à son temps."}
+      ],
+      "html": ".impeccable/mocks/decision/assigned.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "model-pick",
+      "kind": "pick",
+      "label": "Le livret tamponné",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Livret d'apprentissage papier : grille de compétences, cases validées au tampon et paraphées",
+      "thesis": "Chaque compétence est une case du livret, remplie au tampon par l'enseignant.",
+      "palette": ["#FFFFFF", "#1B2A4A", "#B3261E", "#D9DEE7", "#6B7A90"],
+      "materials": ["grille réglée", "encre de tampon", "paraphes manuscrits"],
+      "viewport": "Titre natif, grille 4 compétences × sous-compétences en tête, cases pleines, à moitié ou vides, alerte et prochaine leçon dessous.",
+      "risk": "Familier : c'est la direction où la plupart des applis de livret atterrissent, et la grille écrase vite le reste de l'écran.",
+      "html": ".impeccable/mocks/decision/pick.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "challenger-wayfinding",
+      "kind": "challenger",
+      "catalogId": "wayfinding-cartography-signage-terminal-yellow-wayfinding",
+      "label": "Le bandeau de correspondance",
+      "verdict": "competitive",
+      "lineage": "Signalétique jaune d'aéroport, refondue pour l'auto-école",
+      "thesis": "Une seule prochaine décision, affichée en grand dans un bandeau jaune qui suit l'enseignant.",
+      "palette": ["#FFD100", "#111111", "#FFFFFF", "#F2F2F2"],
+      "materials": ["bandeau signalétique", "pictogrammes blancs sur carré noir", "chiffres monumentaux"],
+      "viewport": "Bandeau jaune collant : « 14:00 · Gare d'Aix · dans 35 min », puis la fiche de l'élève en listes natives.",
+      "case": "Gagne en clarté (l'enseignant en voiture ne voit que la prochaine étape), perd en identification : l'aéroport n'est pas le monde des élèves.",
+      "risk": "Le jaune plein fatigue s'il sort du seul bandeau ; il entre en concurrence avec les couleurs d'état.",
+      "hero": "https://impeccable.style/worlds/cards/wayfinding-cartography-signage-terminal-yellow-wayfinding-hero.webp",
+      "html": ".impeccable/mocks/decision/wayfinding.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "challenger-exposure", "kind": "challenger", "catalogId": "operate-b-exposure-record-zone-sheets",
+      "label": "Fiche d'exposition", "verdict": "declined", "lineage": "Fiches d'agrandisseur photo",
+      "thesis": "Feuilles translucides et hachures de densité.", "palette": ["#EDEDEA", "#7A7A76", "#C2185B"],
+      "materials": ["calque", "hachures"], "viewport": "Feuilles superposées en biais.",
+      "risk": "Illisible pour un élève de 17 ans.",
+      "case": "Perd sur les deux axes : personne dans une auto-école ne reconnaît ce monde.",
+      "kept": "Neutres calés sur une rampe tonale stricte.",
+      "hero": "https://impeccable.style/worlds/cards/operate-b-exposure-record-zone-sheets-hero.webp"
+    },
+    {
+      "id": "challenger-catalog", "kind": "challenger", "catalogId": "brand-identity-canon-saville-catalog-sleeve",
+      "label": "Pochette numérotée", "verdict": "declined", "lineage": "Identité de label musical à numéros de catalogue",
+      "thesis": "Tout est numéroté, rien n'est nommé.", "palette": ["#111111", "#FFFFFF", "#E4572E"],
+      "materials": ["noir mat", "filets blancs"], "viewport": "Un numéro seul sur fond noir.",
+      "risk": "Codé au point de cacher l'information utile.",
+      "case": "Perd sur les deux axes : la clarté prime pour un outil de travail.",
+      "kept": "Le numéro de leçon dans la séquence devient le titre.",
+      "hero": "https://impeccable.style/worlds/cards/brand-identity-canon-saville-catalog-sleeve-hero.webp"
+    },
+    {
+      "id": "challenger-folio", "kind": "challenger", "catalogId": "editorial-sequence-montage-botanical-folio-season",
+      "label": "Planches botaniques", "verdict": "declined", "lineage": "Folio botanique par saisons",
+      "thesis": "Une même plante, à la même échelle, à chaque stade.", "palette": ["#F4EEDF", "#3F6B3A", "#B0302A"],
+      "materials": ["planches", "filets sépia"], "viewport": "Cinq planches alignées.",
+      "risk": "Fond crème et serif : le cliché « IA » par excellence.",
+      "case": "Perd sur les deux axes.",
+      "kept": "La progression à échelle fixe, comparable.",
+      "hero": "https://impeccable.style/worlds/cards/editorial-sequence-montage-botanical-folio-season-hero.webp"
+    },
+    {
+      "id": "challenger-metro", "kind": "challenger", "catalogId": "digital-design-canon-metro-typographic-tiles",
+      "label": "Tuiles typographiques", "verdict": "declined", "lineage": "Interfaces à tuiles plates et grande typo",
+      "thesis": "Le texte est l'interface.", "palette": ["#000000", "#1BA1E2", "#FFFFFF"],
+      "materials": ["aplats", "titres coupés"], "viewport": "Titre géant coupé au bord.",
+      "risk": "Langage d'interface d'un autre système : contraire au rendu natif iOS/Android demandé.",
+      "case": "Perd sur les deux axes.",
+      "kept": "La hiérarchie par l'échelle typographique, sans cadres.",
+      "hero": "https://impeccable.style/worlds/cards/digital-design-canon-metro-typographic-tiles-hero.webp"
+    },
+    {
+      "id": "challenger-laban", "kind": "challenger", "catalogId": "notation-diagram-systems-labanotation",
+      "label": "Partition de mouvement", "verdict": "declined", "lineage": "Notation chorégraphique",
+      "thesis": "Le temps lu comme une longueur exacte.", "palette": ["#FFFFFF", "#111111", "#BDBDBD"],
+      "materials": ["portée verticale", "blocs hachurés"], "viewport": "Portée centrale lue de bas en haut.",
+      "risk": "Abstrait au point d'être hermétique.",
+      "case": "Perd sur les deux axes.",
+      "kept": "Durée = longueur sur la bande du jour.",
+      "hero": "https://impeccable.style/worlds/cards/notation-diagram-systems-labanotation-hero.webp"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "code"},
+  "canon": true,
+  "canonCard": {
+    "kind": "canon",
+    "label": "Le standard du secteur",
+    "thesis": "Une appli iOS/Android classique, comme les autres applis d'auto-école, exécutée proprement.",
+    "palette": ["#FFFFFF", "#F2F2F7", "#111111", "#0A6CFF"],
+    "materials": ["listes groupées", "avatar rond", "teinte bleue"],
+    "viewport": "Titre, avatar, onglets segmentés, listes groupées.",
+    "risk": "Impossible à distinguer de la concurrence, par construction.",
+    "html": ".impeccable/mocks/decision/canon.html",
+    "htmlFrame": "390x844"
+  },
+  "steer": true
+}

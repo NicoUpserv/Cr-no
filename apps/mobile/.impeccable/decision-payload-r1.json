@@ -1,0 +1,129 @@
+{
+  "title": "Créno — choisir l'univers visuel (nouvelle série)",
+  "question": "Premier écran : la fiche élève vue par l'enseignant. Garde la direction tirée, prends une alternative, ou relance.",
+  "options": [
+    {
+      "id": "assigned-r1",
+      "kind": "assigned",
+      "label": "Le panneau de toit",
+      "kicker": "THE ROLL",
+      "lineage": "Le panneau « AUTO-ÉCOLE » posé sur le toit des voitures-écoles, éclairé la nuit",
+      "thesis": "Chaque élève et chaque leçon portent leur panneau ; il s'allume quand la leçon est en cours ou imminente.",
+      "palette": ["#0B3D91", "#FFFFFF", "#D52B1E", "#FFF1C2", "#14171A", "#E6E8EC"],
+      "materials": ["panneau émaillé aux bouts biseautés", "lettrage condensé gras", "éclairage par aplat (pas de halo)", "teinte de l'auto-école"],
+      "viewport": "En-tête natif teinté aux couleurs de l'auto-école, panneau blanc « LINA MOREL · B » aux bouts biseautés, puis Leçon 14/20, alerte avec sa preuve, prochaine leçon et listes natives.",
+      "risk": "Si le panneau se répète partout, il devient un gadget ; il reste réservé à l'identité de l'élève et à la leçon en cours.",
+      "raised": [
+        {"from": "challenger-ikeda", "raise": "Heures, soldes et compteurs en chiffres tabulaires alignés, jamais en chiffres proportionnels."},
+        {"from": "challenger-mono-marketing", "raise": "Chaque alerte montre sa preuve : « Cours non consulté — ouvert 0 fois, envoyé le 10 nov. »."},
+        {"from": "challenger-centre-rail", "raise": "Le rouge est réservé aux alertes et à la leçon en cours ; jamais décoratif."},
+        {"from": "challenger-feed", "raise": "L'élève suivant de la journée est toujours à un balayage de la fiche."}
+      ],
+      "html": ".impeccable/mocks/decision/r1-assigned.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "pick-r1",
+      "kind": "pick",
+      "label": "Le permis rose",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "L'ancien permis de conduire papier rose : volet plié, cases de catégories datées, tampons de préfecture",
+      "thesis": "Le but de l'élève est visible dès l'ouverture : les cases du permis se remplissent, catégorie par catégorie.",
+      "palette": ["#F6D7DE", "#FFFFFF", "#2A2140", "#7A1F3D", "#E9E4EC"],
+      "materials": ["fond guilloché très discret", "cases de catégories (AM, A1, A2, B, BE…)", "tampon daté"],
+      "viewport": "Titre natif, bande rose des catégories avec B « en cours » et sa date visée, puis alerte, prochaine leçon et listes.",
+      "risk": "Le rose peut sembler daté ou mièvre côté direction ; à réserver à l'espace élève et aux moments de réussite.",
+      "html": ".impeccable/mocks/decision/r1-pick.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "challenger-transit",
+      "kind": "challenger",
+      "catalogId": "wayfinding-cartography-signage-midnight-transit-diagram",
+      "label": "Le plan de lignes",
+      "verdict": "competitive",
+      "lineage": "Plan schématique de transports en commun",
+      "thesis": "Chaque enseignant est une ligne de couleur, chaque leçon une station ; les correspondances sont les changements d'élève.",
+      "palette": ["#13213F", "#FFFFFF", "#E0352B", "#2D6CDF", "#F2A900", "#2E9E5B"],
+      "materials": ["lignes à 45 et 90 degrés", "stations en pastilles blanches", "étiquettes à taille fixe"],
+      "viewport": "Fiche élève : sa ligne de formation C1 → C4 en stations, la station courante allumée, puis listes natives.",
+      "case": "Très clair pour le planning de la direction (une ligne par enseignant) ; identification moyenne, plus urbaine que locale.",
+      "risk": "Le fond bleu nuit alourdit un outil utilisé en plein soleil ; à garder pour les vues planning.",
+      "hero": "https://impeccable.style/worlds/cards/wayfinding-cartography-signage-midnight-transit-diagram-hero.webp",
+      "html": ".impeccable/mocks/decision/r1-transit.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "challenger-orienteering",
+      "kind": "challenger",
+      "catalogId": "notation-diagram-systems-orienteering-map",
+      "label": "La course d'orientation",
+      "verdict": "competitive",
+      "lineage": "Cartes de course d'orientation (faite par la plupart des élèves en EPS)",
+      "thesis": "Le parcours en violet par-dessus tout, avec des postes numérotés : chaque point d'attention est un poste à valider.",
+      "palette": ["#FFFFFF", "#F7E27A", "#9DBA6B", "#8C5A2B", "#3D8BC9", "#9B2D8F"],
+      "materials": ["cercles de postes numérotés", "ligne de parcours violette", "tableau de description des postes"],
+      "viewport": "Fiche élève : prochaine leçon dessinée comme un parcours à postes (priorités, giratoire, insertion), puis listes natives.",
+      "case": "Idéal pour les parcours d'examen et les zones de travail ; moins naturel pour la gestion administrative.",
+      "risk": "Plusieurs couleurs de terrain : dense si on l'étend à tous les écrans.",
+      "hero": "https://impeccable.style/worlds/cards/notation-diagram-systems-orienteering-map-hero.webp",
+      "html": ".impeccable/mocks/decision/r1-orienteering.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "challenger-ikeda", "kind": "challenger", "catalogId": "ikeda-datamatics",
+      "label": "Champ de données", "verdict": "declined", "lineage": "Installations audiovisuelles noir et blanc",
+      "thesis": "Barres et chiffres en noir et blanc pur.", "palette": ["#000000", "#FFFFFF"],
+      "materials": ["codes-barres", "mono tabulaire"], "viewport": "Colonnes de données.",
+      "risk": "Froid et clignotant : hors sujet pour des élèves.",
+      "case": "Perd sur les deux axes.",
+      "kept": "Chiffres tabulaires alignés.",
+      "hero": "https://impeccable.style/worlds/cards/ikeda-datamatics-hero.webp"
+    },
+    {
+      "id": "challenger-mono-marketing", "kind": "challenger", "catalogId": "digital-design-canon-monochrome-product-marketing",
+      "label": "Monochrome logiciel", "verdict": "declined", "lineage": "Pages produit de logiciels",
+      "thesis": "Une échelle de gris et un accent.", "palette": ["#FAFAFA", "#111111", "#4F46E5"],
+      "materials": ["captures", "boutons fantômes"], "viewport": "Affirmation puis preuve.",
+      "risk": "C'est précisément le look « IA » à éviter.",
+      "case": "Perd sur les deux axes.",
+      "kept": "Chaque affirmation accompagnée de sa preuve.",
+      "hero": "https://impeccable.style/worlds/cards/digital-design-canon-monochrome-product-marketing-hero.webp"
+    },
+    {
+      "id": "challenger-centre-rail", "kind": "challenger", "catalogId": "rw-centre-rail-reference-setting",
+      "label": "Édition à rail central", "verdict": "declined", "lineage": "Mise en page d'ouvrages de référence",
+      "thesis": "Deux colonnes autour d'un rail de renvois.", "palette": ["#F3EEE4", "#111111", "#C23B22"],
+      "materials": ["filets", "marges annotées"], "viewport": "Page d'ouvrage annotée.",
+      "risk": "Livresque, illisible sur téléphone en voiture.",
+      "case": "Perd sur les deux axes.",
+      "kept": "Une seule couleur de rubrique, réservée.",
+      "hero": "https://impeccable.style/worlds/cards/rw-centre-rail-reference-setting-hero.webp"
+    },
+    {
+      "id": "challenger-feed", "kind": "challenger", "catalogId": "pop-culture-shelf-vertical-video-feed-surface",
+      "label": "Fil vertical plein écran", "verdict": "declined", "lineage": "Fils de vidéos verticales",
+      "thesis": "Un élément plein écran, le suivant à un geste.", "palette": ["#000000", "#FFFFFF", "#FE2C55"],
+      "materials": ["plein écran", "rail d'actions"], "viewport": "Un élève plein écran.",
+      "risk": "Transforme un outil de travail en réseau social.",
+      "case": "Perd sur les deux axes (garde un intérêt pour les cours vidéo).",
+      "kept": "Le suivant toujours à un geste.",
+      "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-vertical-video-feed-surface-hero.webp"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "code"},
+  "canon": true,
+  "canonCard": {
+    "kind": "canon",
+    "label": "Le standard du secteur",
+    "thesis": "Une appli iOS/Android classique, comme les autres applis d'auto-école, exécutée proprement.",
+    "palette": ["#FFFFFF", "#F2F2F7", "#111111", "#0A6CFF"],
+    "materials": ["listes groupées", "avatar rond", "teinte bleue"],
+    "viewport": "Titre, avatar, onglets segmentés, listes groupées.",
+    "risk": "Impossible à distinguer de la concurrence, par construction.",
+    "html": ".impeccable/mocks/decision/r1-canon.html",
+    "htmlFrame": "390x844"
+  },
+  "steer": true
+}
