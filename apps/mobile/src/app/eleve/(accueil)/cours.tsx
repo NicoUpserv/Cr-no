@@ -6,7 +6,7 @@
 import { Stack, useRouter } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useMemo, useRef, useState, type ComponentRef } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { Bouton, EtatVide, Icone, Ligne, NoteAttention, Section, Texte } from '@/components/ui';
 import { idEleveConnecte, prochaineLecon, trouverCours } from '@/data/depot';
@@ -30,14 +30,22 @@ const ETAPES: { cle: Etape; libelle: string }[] = [
 
 function Lecteur({ source }: { source: number | string }) {
   const { couleurs, rayon } = useTheme();
+  const { width } = useWindowDimensions();
   const player = useVideoPlayer(source, (p) => {
     p.loop = false;
   });
+  // Format vertical 9:16, à une taille qui laisse voir toute la vidéo et ses commandes.
+  const largeur = Math.min(width - 32, 300);
+  const hauteur = Math.round((largeur * 16) / 9);
   return (
-    <View style={[styles.cadreVideo, { borderRadius: rayon.groupe, backgroundColor: couleurs.bitume }]}>
+    <View
+      style={[
+        styles.cadreVideo,
+        { width: largeur, height: hauteur, borderRadius: rayon.groupe, backgroundColor: couleurs.bitume },
+      ]}>
       <VideoView
         player={player}
-        style={styles.video}
+        style={{ width: largeur, height: hauteur }}
         nativeControls
         allowsPictureInPicture={false}
         contentFit="contain"
@@ -277,12 +285,6 @@ export default function LecteurCours() {
 const styles = StyleSheet.create({
   cadreVideo: {
     overflow: 'hidden',
-    aspectRatio: 9 / 16,
-    maxHeight: 520,
     alignSelf: 'center',
-    width: '100%',
-  },
-  video: {
-    flex: 1,
   },
 });
