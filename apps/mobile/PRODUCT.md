@@ -24,7 +24,7 @@ Donner aux auto-écoles indépendantes et aux enseignants indépendants une appl
 
 Outil B2B2C vendu aux auto-écoles et aux enseignants indépendants, pas une auto-école en ligne concurrente. Mécanismes distinctifs :
 - disponibilités routinières + ouvertures ponctuelles, avec alerte ciblée aux élèves dont les préférences (créneaux, enseignants favoris) correspondent ; liste d'attente sur annulation ;
-- cours avant la leçon (~15 min : vidéos, fiche technique, quiz aléatoire avec explications, bilan, « ce que dit la loi ») sous la responsabilité de l'élève ; validé par un quiz réussi (5/6), alerte à l'enseignant sinon (l'heure de conduite reste entière). Détail : `docs/cours-avant-lecon.md` ;
+- cours avant la leçon (~15 min : une ou plusieurs vidéos, une ou plusieurs fiches techniques, quiz aléatoire avec explications, bilan = résultat du quiz, « ce que dit la loi » ; catalogue commun à toutes les auto-écoles, ordre choisi par chaque auto-école) sous la responsabilité de l'élève ; validé par un quiz réussi (5/6), alerte à l'enseignant sinon (l'heure de conduite reste entière). Détail : `docs/cours-avant-lecon.md` ;
 - fiche de leçon partagée avec l'élève, double observation (visible élève / réservée enseignants) ;
 - parcours d'examen enregistrés, annotés et rejoués en « GPS du parcours » ;
 - enseignant indépendant : planning consolidé sur plusieurs auto-écoles ;

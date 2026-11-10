@@ -1,7 +1,7 @@
 # Le cours avant la leçon — spécification
 
 Source : échanges avec le client (Tarek, enseignant), 10 novembre 2026, et vidéo de test « Bien freiner » validée par une élève.
-Statut : **validé le 10/11/2026** (structure, quiz aléatoire avec réponses mélangées, trois états de suivi, charte des vidéos). Restent les « Questions ouvertes ».
+Statut : **validé le 10/11/2026** (structure, quiz aléatoire avec réponses mélangées, trois états de suivi, charte des vidéos), **complété le 10/11/2026** avec les réponses du client (bilan, cours multi-vidéos et multi-fiches, catalogue commun). Restent les « Questions ouvertes ».
 
 ## Principe
 
@@ -11,13 +11,13 @@ Avant chaque leçon de conduite, l'élève suit un cours d'environ **15 minutes*
 
 | Étape | Durée | Contenu |
 |---|---|---|
-| 1. Vidéo(s) | ~5 min | Une vidéo ou plusieurs vidéos courtes (~1 min chacune). Format vertical 9:16 pour le téléphone (version horizontale possible). |
-| 2. Fiche technique | ~5 min | Texte court, illustré, découpé en étapes. Lisible sur téléphone. |
+| 1. Vidéo(s) | ~5 min | Une ou **plusieurs** vidéos courtes (~1 min chacune). Format vertical 9:16 pour le téléphone (version horizontale possible). |
+| 2. Fiche(s) technique(s) | ~5 min | Une ou **plusieurs** fiches : texte court, illustré, découpé en étapes. Lisible sur téléphone. |
 | 3. Quiz | ~3 min | Questions tirées au hasard dans une banque (voir règles ci-dessous). |
-| 4. Bilan | ~1 min | Les points à retenir. **À préciser avec le client** (voir questions). |
+| 4. Bilan | ~1 min | **Le résultat du quiz** (décision du client) : score, cours validé ou à refaire, et pour chaque question ratée la bonne réponse avec son explication. |
 | 5. Ce que dit la loi | ~1 min | Article, amende, points retirés, risque de suspension ou de prison, et le conseil pratique, tels que rédigés par l'auto-école. |
 
-Exemple fourni par le client, à titre d'illustration seulement (le cours « Freinage » n'est pas à intégrer tel quel ; il sera refait) : une vidéo par type de freinage (dégressif, progressif, linéaire, d'urgence).
+Un cours peut donc réunir plusieurs vidéos et plusieurs fiches sur un même thème. Exemple donné par le client (illustration seulement, le cours sera refait) : le cours « Freinage » = **4 petites vidéos** (dégressif, progressif, linéaire, d'urgence) et **3 fiches techniques**, puis un seul quiz et un seul bilan.
 
 ## Règles du quiz
 
@@ -40,6 +40,13 @@ Trois états au lieu de « consulté / non consulté » :
 
 Bonus utile pour l'enseignant : les questions les plus ratées par l'élève, pour savoir quoi travailler en voiture.
 
+## Catalogue commun et parcours par auto-école (décision du client)
+
+- **Les cours sont les mêmes pour toutes les auto-écoles** : c'est le catalogue de Créno.
+- **Chaque auto-école choisit l'ordre** des cours dans son parcours (l'ordre d'enseignement change d'une auto-école à l'autre).
+- **Une auto-école peut ajouter ses propres cours**, mais ce n'est pas le but : l'objectif est que l'élève obtienne son permis et sache bien conduire, sans le surcharger. L'interface d'ajout restera donc discrète (phase 2).
+- Conséquence technique : un catalogue global (`Cours`) + un parcours par auto-école (`ParcoursAutoEcole` : ordre des cours et cours ajoutés).
+
 ## « Ce que dit la loi »
 
 Le contenu est celui du cours de l'auto-école : **l'appli l'affiche tel quel, sans le modifier** (décision du 10/11/2026). L'auto-école en est responsable.
@@ -59,15 +66,23 @@ type Cours = {
   id: string;
   competence: 'C1' | 'C2' | 'C3' | 'C4';
   sousCompetence: string;          // ex. « Freiner »
-  titre: string;                    // ex. « Le freinage dégressif »
-  videos: { url: string; dureeSecondes: number; format: 'vertical' | 'horizontal' }[];
-  fiche: { etapes: { titre: string; texte: string; imageUrl?: string }[] };
+  titre: string;                    // ex. « Le freinage »
+  videos: { titre: string; url: string; dureeSecondes: number; format: 'vertical' | 'horizontal' }[];
+  fiches: { titre: string; etapes: { titre: string; texte: string; imageUrl?: string }[] }[];
   banqueQuestions: QuestionQuiz[];  // ≥ 15 pour 6 affichées
   nbQuestionsAffichees: number;     // 6 par défaut
   seuilReussite: number;            // 5 par défaut
-  bilan: string[];                  // points à retenir
-  loi?: { texte: string; references: { libelle: string; url: string }[]; verifieLe: string };
+  // Pas de champ « bilan » : le bilan est calculé à partir de la tentative (score + questions ratées).
+  loi?: { texte: string; references?: { libelle: string; url: string }[]; misAJourLe?: string };
+  /** null = cours du catalogue Créno ; sinon cours ajouté par cette auto-école. */
+  autoEcoleId: string | null;
   valideParEnseignant: boolean;
+};
+
+/** Parcours d'une auto-école : l'ordre dans lequel ses élèves suivent les cours. */
+type ParcoursAutoEcole = {
+  autoEcoleId: string;
+  ordreCoursIds: string[];          // cours du catalogue et cours ajoutés, dans l'ordre choisi
 };
 
 type QuestionQuiz = {
@@ -90,13 +105,17 @@ Le type actuel `CoursPrealable` (`ouvertures`) sera remplacé par `SuiviCours`.
 
 ## Phasage
 
-- **Phase 1** : lecteur de cours (vidéos, fiche, quiz aléatoire avec explications, bilan, loi), suivi des trois états, alertes enseignant. Contenus saisis par nous à partir des documents du client.
-- **Phase 2** : éditeur de cours pour le client ; génération de questions par IA (brouillons à valider) ; statistiques des questions ratées.
+- **Phase 1** : lecteur de cours (plusieurs vidéos, plusieurs fiches, quiz aléatoire avec explications, bilan = résultat du quiz, loi), suivi des trois états, alertes enseignant, catalogue commun dans l'ordre par défaut. Contenus saisis par nous à partir des documents du client.
+- **Phase 2** : réglage de l'ordre des cours par auto-école ; éditeur de cours (catalogue Créno + cours ajoutés par une auto-école) ; génération de questions par IA (brouillons à valider) ; statistiques des questions ratées.
 
-## Questions ouvertes (à poser au client)
+## Questions réglées le 10/11/2026
 
-1. **Bilan** : c'est un résumé des points à retenir (comme « Rétro, fort, puis doux » à la fin de la vidéo) ou le récapitulatif du score de l'élève ?
-2. **Freinage** : un cours « Freinage » avec 4 vidéos, ou 4 cours distincts (un par type), chacun lié à une leçon ?
-3. **Quiz raté plusieurs fois** : on bloque la réservation de la leçon, ou on prévient seulement l'enseignant ? (Recommandation : seulement prévenir, la responsabilité reste à l'élève.)
-4. **Qui valide les questions générées par IA** : le client seul, ou chaque auto-école pour ses élèves ?
-5. **Contenus partagés ou par auto-école** : les cours de Créno sont-ils les mêmes pour toutes les auto-écoles, ou chaque auto-école peut-elle ajouter/modifier les siens ?
+- **Bilan** = résultat du questionnaire.
+- **Freinage** = un seul cours (4 petites vidéos, 3 fiches techniques).
+- **Contenus** = catalogue commun ; chaque auto-école choisit l'ordre et peut ajouter des cours, sans surcharger l'élève.
+
+## Questions ouvertes
+
+1. **Quiz raté plusieurs fois** : on bloque la réservation de la leçon, ou on prévient seulement l'enseignant ? (Recommandation, appliquée par défaut : seulement prévenir, la responsabilité reste à l'élève.)
+2. **Qui valide les questions générées par IA** : le client seul (catalogue Créno), ou chaque auto-école pour ses cours ajoutés ? (Proposition : le client pour le catalogue, l'auto-école pour ses propres cours.)
+3. **Droits sur les contenus** : les cours qui formeront le catalogue commun viennent de l'auto-école où travaille le client (« c'est le cours de son auto-école »). Pour les proposer à toutes les auto-écoles clientes de Créno, il faut l'accord écrit du propriétaire de ces contenus (l'auto-école ou son gérant), ou que Créno produise ses propres versions. **À régler avant la commercialisation.**

@@ -10,9 +10,9 @@ import { formatHeure, formatJour } from '@/lib/format';
 
 const etapes = [
   { titre: 'Vidéos', detail: 'Environ 5 min · plusieurs vidéos courtes', icone: 'cours' as const },
-  { titre: 'Fiche technique', detail: 'Environ 5 min · les étapes à retenir', icone: 'document' as const },
+  { titre: 'Fiches techniques', detail: 'Environ 5 min · les étapes à retenir', icone: 'document' as const },
   { titre: 'Quiz', detail: 'Environ 3 min · 6 questions, 5 bonnes réponses pour valider', icone: 'valider' as const },
-  { titre: 'Bilan', detail: 'Environ 1 min · l’essentiel en une phrase', icone: 'livret' as const },
+  { titre: 'Bilan', detail: 'Environ 1 min · ton résultat et les corrections', icone: 'livret' as const },
   { titre: 'Ce que dit la loi', detail: 'Environ 1 min · amende, points, risques', icone: 'attention' as const },
 ];
 
