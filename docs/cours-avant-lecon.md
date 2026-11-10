@@ -25,7 +25,10 @@ Un cours peut donc réunir plusieurs vidéos et plusieurs fiches sur un même th
 2. **Tirage aléatoire des questions ET de l'ordre des réponses.** Dans l'exemple du client, la bonne réponse est toujours B : un élève l'aurait remarqué en deux questions. L'ordre des réponses doit être mélangé à chaque passage.
 3. **Explication après chaque réponse**, comme dans l'exemple du client (« Si tu ne regardes pas derrière, celui qui te suit peut te rentrer dedans. »). C'est ce qui fait apprendre.
 4. **Seuil de réussite : 5 bonnes réponses sur 6** (environ 80 %). En dessous : « Relis la fiche et revois la vidéo », puis nouveau quiz avec de nouvelles questions.
-5. **Questions générées par IA : oui, mais en brouillon.** L'IA propose des questions à partir de la fiche ; l'enseignant les relit et les valide avant qu'elles entrent dans la banque. Jamais de question générée et montrée directement à l'élève (risque d'erreur sur des règles de sécurité et de droit).
+5. **Origine des questions (décision du 10/11/2026)** :
+   - d'abord **les questions déjà rédigées par le client** ;
+   - s'il n'y en a pas assez, l'IA en **propose d'autres, à partir du contenu du cours uniquement** (vidéos, fiches), sans rien ajouter d'extérieur ;
+   - **le client valide** chaque question proposée avant qu'elle entre dans la banque. Jamais de question générée et montrée directement à l'élève.
 6. Ton : tutoiement, phrases courtes, vocabulaire d'auto-école (cf. `apps/mobile/PRODUCT.md`).
 
 ## Ce que voit l'enseignant
@@ -42,10 +45,12 @@ Bonus utile pour l'enseignant : les questions les plus ratées par l'élève, po
 
 ## Catalogue commun et parcours par auto-école (décision du client)
 
-- **Les cours sont les mêmes pour toutes les auto-écoles** : c'est le catalogue de Créno.
-- **Chaque auto-école choisit l'ordre** des cours dans son parcours (l'ordre d'enseignement change d'une auto-école à l'autre).
-- **Une auto-école peut ajouter ses propres cours**, mais ce n'est pas le but : l'objectif est que l'élève obtienne son permis et sache bien conduire, sans le surcharger. L'interface d'ajout restera donc discrète (phase 2).
-- Conséquence technique : un catalogue global (`Cours`) + un parcours par auto-école (`ParcoursAutoEcole` : ordre des cours et cours ajoutés).
+- **Créno fournit les cours** : un catalogue commun à toutes les auto-écoles.
+- **Une auto-école peut mettre ses propres cours** : il faut lui offrir cette possibilité (décision du 10/11/2026). Ce n'est pas le cas général : l'objectif est que l'élève obtienne son permis et sache bien conduire, sans le surcharger.
+- **Chaque auto-école choisit l'ordre** des cours de son parcours :
+  - **pendant l'onboarding** de l'auto-école (une étape « Ordre des cours », préremplie avec l'ordre par défaut de Créno) ;
+  - **et ensuite dans les paramètres**, à tout moment.
+- Conséquence technique : un catalogue global (`Cours`) + un parcours par auto-école (`ParcoursAutoEcole` : ordre des cours, cours ajoutés).
 
 ## « Ce que dit la loi »
 
@@ -105,8 +110,8 @@ Le type actuel `CoursPrealable` (`ouvertures`) sera remplacé par `SuiviCours`.
 
 ## Phasage
 
-- **Phase 1** : lecteur de cours (plusieurs vidéos, plusieurs fiches, quiz aléatoire avec explications, bilan = résultat du quiz, loi), suivi des trois états, alertes enseignant, catalogue commun dans l'ordre par défaut. Contenus saisis par nous à partir des documents du client.
-- **Phase 2** : réglage de l'ordre des cours par auto-école ; éditeur de cours (catalogue Créno + cours ajoutés par une auto-école) ; génération de questions par IA (brouillons à valider) ; statistiques des questions ratées.
+- **Phase 1** : lecteur de cours (plusieurs vidéos, plusieurs fiches, quiz aléatoire avec explications, bilan = résultat du quiz, loi), suivi des trois états, alertes enseignant (prévenir seulement), catalogue commun ; **ordre des cours réglable à l'onboarding et dans les paramètres** (simple liste à réordonner). Contenus saisis par nous à partir des documents du client.
+- **Phase 2** : éditeur de cours (catalogue Créno + cours ajoutés par une auto-école) ; génération de questions par IA à partir du cours, validées par le client ; statistiques des questions ratées.
 
 ## Questions réglées le 10/11/2026
 
@@ -114,8 +119,11 @@ Le type actuel `CoursPrealable` (`ouvertures`) sera remplacé par `SuiviCours`.
 - **Freinage** = un seul cours (4 petites vidéos, 3 fiches techniques).
 - **Contenus** = catalogue commun ; chaque auto-école choisit l'ordre et peut ajouter des cours, sans surcharger l'élève.
 
+- **Quiz raté plusieurs fois** : on **prévient seulement** l'enseignant, on ne bloque pas la réservation.
+- **Questions** : celles du client d'abord, complétées si besoin par l'IA à partir du cours uniquement, toutes validées par le client.
+- **Cours des auto-écoles** : Créno fournit le catalogue ; une auto-école peut ajouter ses cours ; l'ordre se règle à l'onboarding et dans les paramètres.
+
 ## Questions ouvertes
 
-1. **Quiz raté plusieurs fois** : on bloque la réservation de la leçon, ou on prévient seulement l'enseignant ? (Recommandation, appliquée par défaut : seulement prévenir, la responsabilité reste à l'élève.)
-2. **Qui valide les questions générées par IA** : le client seul (catalogue Créno), ou chaque auto-école pour ses cours ajoutés ? (Proposition : le client pour le catalogue, l'auto-école pour ses propres cours.)
-3. **Droits sur les contenus** : les cours qui formeront le catalogue commun viennent de l'auto-école où travaille le client (« c'est le cours de son auto-école »). Pour les proposer à toutes les auto-écoles clientes de Créno, il faut l'accord écrit du propriétaire de ces contenus (l'auto-école ou son gérant), ou que Créno produise ses propres versions. **À régler avant la commercialisation.**
+1. **Questions des cours ajoutés par une auto-école** : qui les valide, le client ou l'auto-école elle-même ? (Proposition : l'auto-école, puisque ce sont ses contenus.)
+2. **Droits sur le catalogue Créno** : « on va fournir des cours » — le catalogue doit appartenir à Créno. Si des cours viennent de l'auto-école où travaille le client (« c'est le cours de son auto-école »), il faut l'accord écrit de son propriétaire (l'auto-école ou son gérant), ou que Créno produise ses propres versions. **À régler avant la commercialisation.** Les cours ajoutés par une auto-école restent sa propriété (à préciser dans les conditions d'utilisation).
