@@ -123,7 +123,9 @@ Le type actuel `CoursPrealable` (`ouvertures`) sera remplacé par `SuiviCours`.
 - **Questions** : celles du client d'abord, complétées si besoin par l'IA à partir du cours uniquement, toutes validées par le client.
 - **Cours des auto-écoles** : Créno fournit le catalogue ; une auto-école peut ajouter ses cours ; l'ordre se règle à l'onboarding et dans les paramètres.
 
-## Questions ouvertes
+- **Cours ajoutés par une auto-école** : l'auto-école les gère elle-même (contenus et questions) ; Créno ne les valide pas.
 
-1. **Questions des cours ajoutés par une auto-école** : qui les valide, le client ou l'auto-école elle-même ? (Proposition : l'auto-école, puisque ce sont ses contenus.)
-2. **Droits sur le catalogue Créno** : « on va fournir des cours » — le catalogue doit appartenir à Créno. Si des cours viennent de l'auto-école où travaille le client (« c'est le cours de son auto-école »), il faut l'accord écrit de son propriétaire (l'auto-école ou son gérant), ou que Créno produise ses propres versions. **À régler avant la commercialisation.** Les cours ajoutés par une auto-école restent sa propriété (à préciser dans les conditions d'utilisation).
+## Points à suivre
+
+1. **Origine des questions** : règle valable « pour l'instant », à revoir avec le client plus tard.
+2. **Droits sur le catalogue Créno** (pris en compte, à régler avant la commercialisation) : « on va fournir des cours » — le catalogue doit appartenir à Créno. Si des cours viennent de l'auto-école où travaille le client (« c'est le cours de son auto-école »), il faut l'accord écrit de son propriétaire (l'auto-école ou son gérant), ou que Créno produise ses propres versions. **À régler avant la commercialisation.** Les cours ajoutés par une auto-école restent sa propriété (à préciser dans les conditions d'utilisation).
