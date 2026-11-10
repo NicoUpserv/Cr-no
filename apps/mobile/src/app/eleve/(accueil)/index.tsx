@@ -14,22 +14,27 @@ import {
   infosAutoEcole,
   meteoPourLecon,
   prochaineLecon,
+  trouverCours,
   trouverEleve,
   trouverMoniteur,
 } from '@/data/depot';
+import { alerteEleve } from '@/features/cours/alertes';
 import { formatDans, formatHeure, formatJour, formatPiecesManquantes } from '@/lib/format';
 import { ouvrirItineraire } from '@/lib/itineraire';
+import { useSuiviCours } from '@/lib/suivi-cours';
 
 export default function AccueilEleve() {
   const router = useRouter();
   const maintenant = new Date();
   const eleve = trouverEleve(idEleveConnecte());
+  const lecon = eleve ? prochaineLecon(eleve.id, maintenant) : undefined;
+  const cours = trouverCours(lecon?.cours?.coursId);
+  const { suivi } = useSuiviCours(eleve?.id ?? '', cours?.id);
   if (!eleve) return null;
 
-  const lecon = prochaineLecon(eleve.id, maintenant);
   const moniteur = lecon ? trouverMoniteur(lecon.moniteurId) : undefined;
   const meteo = lecon ? meteoPourLecon(lecon) : undefined;
-  const cours = lecon?.cours;
+  const alerte = cours && suivi && lecon ? alerteEleve(cours, suivi, formatHeure(lecon.debut)) : null;
   const autoEcole = infosAutoEcole();
 
   return (
@@ -47,12 +52,7 @@ export default function AccueilEleve() {
               avecQui={moniteur ? `avec ${moniteur.prenom} ${moniteur.nom}` : undefined}
               onItineraire={() => ouvrirItineraire(lecon.lieuDepart.adresse)}
             />
-            {cours && cours.ouvertures === 0 ? (
-              <NoteAttention
-                titre={`Ton cours à faire avant la leçon : ${cours.titre}`}
-                preuve={`Environ 15 min · à valider avant ${formatHeure(lecon.debut)}. Sinon, ton enseignant devra prendre du temps sur ta leçon.`}
-              />
-            ) : null}
+            {alerte ? <NoteAttention titre={alerte.titre} preuve={alerte.preuve} /> : null}
           </Section>
         ) : null}
 
@@ -60,9 +60,15 @@ export default function AccueilEleve() {
           <Section>
             {cours ? (
               <Ligne
-                icone="cours"
-                titre={`Commencer le cours : ${cours.titre}`}
-                sousTitre="Vidéos, fiche, quiz · environ 15 min"
+                icone={suivi?.statut === 'valide' ? 'valider' : 'cours'}
+                titre={
+                  suivi?.statut === 'valide'
+                    ? `Cours validé : ${cours.titre}`
+                    : suivi?.statut === 'commence'
+                      ? `Reprendre le cours : ${cours.titre}`
+                      : `Commencer le cours : ${cours.titre}`
+                }
+                sousTitre={suivi?.statut === 'valide' ? 'Tu peux le revoir quand tu veux' : 'Vidéos, fiches, quiz · environ 15 min'}
                 onPress={() => router.push('/eleve/cours')}
               />
             ) : null}

@@ -6,9 +6,9 @@ import { createContext, useContext, useState, type ReactNode } from 'react';
 
 export type Profil = 'moniteur' | 'eleve' | 'direction';
 
-export const profils: { valeur: Profil; libelle: string; description: string; accueil: '/' | '/eleve' | '/direction' }[] = [
+export const profils: { valeur: Profil; libelle: string; description: string; accueil: '/(tabs)/(aujourdhui)' | '/eleve' | '/direction' }[] = [
   { valeur: 'eleve', libelle: 'Élève', description: 'Lina Morel, permis B', accueil: '/eleve' },
-  { valeur: 'moniteur', libelle: 'Enseignant', description: 'Karim Benali', accueil: '/' },
+  { valeur: 'moniteur', libelle: 'Enseignant', description: 'Karim Benali', accueil: '/(tabs)/(aujourdhui)' },
   { valeur: 'direction', libelle: 'Direction', description: 'Auto-école du Cours', accueil: '/direction' },
 ];
 

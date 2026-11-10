@@ -2,6 +2,9 @@
  * Accès aux données. Pour l'instant : données fictives en mémoire.
  * Plus tard : Supabase. Les écrans n'importent QUE ce fichier, jamais `mock.ts`.
  */
+import type { Cours } from '@/features/cours/types';
+
+import { coursInsertionDemo } from './cours-demo';
 import {
   autoEcole,
   construireLecons,
@@ -127,4 +130,12 @@ export function elevesPretsPourLExamen(): { eleve: Eleve; examen: ExamenBlanc }[
       const eleve = trouverEleve(examen.eleveId);
       return eleve ? [{ eleve, examen }] : [];
     });
+}
+
+/* ----- Cours avant la leçon ----- */
+
+const catalogueCours: Cours[] = [coursInsertionDemo];
+
+export function trouverCours(coursId: string | undefined): Cours | undefined {
+  return coursId ? catalogueCours.find((c) => c.id === coursId) : undefined;
 }

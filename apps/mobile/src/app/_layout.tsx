@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
 import { FournisseurProfil } from '@/lib/profil';
+import { FournisseurSuiviCours } from '@/lib/suivi-cours';
 import { useTheme } from '@/theme/use-theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -34,10 +35,12 @@ export default function RacineLayout() {
 
   return (
     <FournisseurProfil>
-      <ThemeProvider value={themeNavigation}>
-        <StatusBar style="auto" />
-        <Stack screenOptions={{ headerShown: false, animation: 'fade' }} />
-      </ThemeProvider>
+      <FournisseurSuiviCours>
+        <ThemeProvider value={themeNavigation}>
+          <StatusBar style="auto" />
+          <Stack screenOptions={{ headerShown: false, animation: 'fade' }} />
+        </ThemeProvider>
+      </FournisseurSuiviCours>
     </FournisseurProfil>
   );
 }

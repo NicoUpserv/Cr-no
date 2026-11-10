@@ -17,16 +17,23 @@ import {
   Section,
   Texte,
 } from '@/components/ui';
-import { leconsEffectuees, observationsDeLEleve, prochaineLecon, trouverEleve } from '@/data/depot';
+import { leconsEffectuees, observationsDeLEleve, prochaineLecon, trouverCours, trouverEleve } from '@/data/depot';
 import { libellesPermis } from '@/data/types';
-import { formatDans, formatDateCourte, formatFois, formatHeure, formatJour, formatPiecesManquantes } from '@/lib/format';
+import { alerteEnseignant } from '@/features/cours/alertes';
+import { meilleurScore } from '@/features/cours/quiz';
+import { formatDans, formatDateCourte, formatHeure, formatJour, formatPiecesManquantes } from '@/lib/format';
 import { ouvrirItineraire } from '@/lib/itineraire';
+import { useSuiviCours } from '@/lib/suivi-cours';
 import { useTheme } from '@/theme/use-theme';
 
 export function EcranFicheEleve() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { espace } = useTheme();
   const eleve = trouverEleve(id);
+  const maintenant = new Date();
+  const lecon = eleve ? prochaineLecon(eleve.id, maintenant) : undefined;
+  const cours = trouverCours(lecon?.cours?.coursId);
+  const { suivi } = useSuiviCours(eleve?.id ?? '', cours?.id);
 
   if (!eleve) {
     return (
@@ -41,12 +48,11 @@ export function EcranFicheEleve() {
     );
   }
 
-  const maintenant = new Date();
-  const lecon = prochaineLecon(eleve.id, maintenant);
   const effectuees = leconsEffectuees(eleve.id, maintenant);
   const observations = observationsDeLEleve(eleve.id);
   const derniere = observations[0];
-  const coursNonConsulte = lecon?.cours && lecon.cours.ouvertures === 0 ? lecon.cours : undefined;
+  const alerteCours = cours && suivi && lecon?.cours ? alerteEnseignant(cours, suivi, lecon.cours.envoyeLe) : null;
+  const meilleur = suivi ? meilleurScore(suivi) : null;
 
   return (
     <>
@@ -72,12 +78,17 @@ export function EcranFicheEleve() {
               quand={`${formatJour(lecon.debut, maintenant)} · ${formatDans(lecon.debut, lecon.fin, maintenant)}`}
               onItineraire={() => ouvrirItineraire(lecon.lieuDepart.adresse)}
             />
-            {coursNonConsulte ? (
-              <NoteAttention
-                titre={`Cours non consulté : ${coursNonConsulte.titre}`}
-                preuve={`Envoyé le ${formatDateCourte(coursNonConsulte.envoyeLe)} · ouvert ${formatFois(coursNonConsulte.ouvertures)}`}
-              />
-            ) : null}
+            {alerteCours ? <NoteAttention titre={alerteCours.titre} preuve={alerteCours.preuve} /> : null}
+          </Section>
+        ) : null}
+
+        {cours && suivi?.statut === 'valide' ? (
+          <Section titre="Cours avant la leçon">
+            <Ligne
+              icone="valider"
+              titre={`Cours validé : ${cours.titre}`}
+              sousTitre={meilleur ? `Meilleur score ${meilleur.score}/${meilleur.total} · ${suivi.tentatives.length} tentative${suivi.tentatives.length > 1 ? 's' : ''}` : undefined}
+            />
           </Section>
         ) : null}
 

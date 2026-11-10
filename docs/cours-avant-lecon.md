@@ -64,6 +64,19 @@ Champs facultatifs mis à disposition : référence (article, lien Légifrance) 
 - **Saisie des contenus** : le client doit pouvoir créer et modifier un cours (vidéos, fiche, banque de questions, bilan, loi) sans passer par un développeur. → Prévoir un **éditeur de cours** dans l'espace direction (phase 2), ou un import depuis un modèle Word / tableur en attendant.
 - **Hébergement vidéo** : Bunny Stream (Europe), lecture adaptée à la connexion de l'élève.
 
+## Protection des vidéos (demande du client)
+
+Objectif : que les vidéos ne puissent pas être téléchargées depuis l'application. **Aucune solution n'est absolue** (on peut toujours filmer l'écran avec un autre appareil), mais on rend la copie difficile :
+
+| Mesure | Où | Statut |
+|---|---|---|
+| Pas de bouton ni de fonction de téléchargement, pas d'image dans l'image, pas de cache | Appli (`expo-video`) | Fait |
+| Captures et enregistrements d'écran bloqués pendant le cours | Android (FLAG_SECURE), iOS (masquage) via `expo-screen-capture` | Fait (rien d'équivalent sur le web) |
+| Lecture en streaming découpé (HLS), jamais de fichier MP4 complet | Hébergement Bunny Stream | Mise en production |
+| Liens signés et éphémères, réservés aux élèves connectés de l'auto-école | Bunny Stream + Supabase | Mise en production |
+| Chiffrement DRM (FairPlay sur iOS, Widevine sur Android) | Bunny Stream (offre DRM) + `expo-video` | À décider (coût supplémentaire) |
+| Filigrane discret avec le nom de l'élève | Lecteur | À décider (dissuasif contre les fuites) |
+
 ## Modèle de données (proposition)
 
 ```ts

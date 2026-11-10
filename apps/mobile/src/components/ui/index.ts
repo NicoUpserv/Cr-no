@@ -1,4 +1,5 @@
 export { BandeProgression, type EtapeProgression } from './BandeProgression';
+export { Bouton } from './Bouton';
 export { Cartouche } from './Cartouche';
 export { ChoixMenu } from './ChoixMenu';
 export { Ecran } from './Ecran';

@@ -51,10 +51,9 @@ export type Eleve = {
 
 /** Cours à consulter par l'élève avant une leçon de conduite. */
 export type CoursPrealable = {
-  titre: string;
+  /** Identifiant du cours du catalogue (voir features/cours). */
+  coursId: string;
   envoyeLe: string;
-  /** Nombre de fois où l'élève l'a ouvert. 0 = non consulté. */
-  ouvertures: number;
 };
 
 export type Lecon = {

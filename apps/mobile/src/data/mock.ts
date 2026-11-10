@@ -143,7 +143,7 @@ export function construireLecons(maintenant: Date): Lecon[] {
       ...creneau(maintenant, 0, 0),
       lieuDepart: lieux.gare,
       lieuFin: lieux.zola,
-      cours: { titre: 'Insertion sur voie rapide', envoyeLe: creneau(maintenant, -2, 0).debut, ouvertures: 0 },
+      cours: { coursId: 'cours-insertion-voie-rapide', envoyeLe: creneau(maintenant, -2, 0).debut },
     },
     {
       id: 'l-morel-15',
@@ -153,7 +153,6 @@ export function construireLecons(maintenant: Date): Lecon[] {
       ...creneau(maintenant, 2, 1),
       lieuDepart: lieux.agence,
       lieuFin: lieux.agence,
-      cours: { titre: 'Dépassement', envoyeLe: creneau(maintenant, 0, -3).debut, ouvertures: 1 },
     },
     {
       id: 'l-haddad-18',
