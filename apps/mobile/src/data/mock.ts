@@ -3,7 +3,32 @@
  * Les leçons sont placées par rapport à « maintenant » pour que l'écran
  * ait toujours une prochaine leçon à afficher.
  */
-import type { DisponibilitesMoniteur, Eleve, Lecon, Lieu, Moniteur, Observation, PreferencesEleve } from './types';
+import type {
+  AutoEcole,
+  DemandeAbsence,
+  DisponibilitesMoniteur,
+  DocumentRecu,
+  Eleve,
+  ExamenBlanc,
+  Lecon,
+  Lieu,
+  Meteo,
+  Moniteur,
+  Observation,
+  PreferencesEleve,
+} from './types';
+
+export const autoEcole: AutoEcole = {
+  nom: 'Auto-école du Cours',
+  ville: 'Aix-en-Provence',
+  offre: { titre: 'Parrainage', texte: 'Parraine un ami : une heure de conduite offerte pour vous deux.' },
+};
+
+/** Élève connecté dans la démonstration (vue élève). */
+export const eleveConnecteId = 'e-morel';
+
+/** Météo prévue (fictive) pour la prochaine leçon. */
+export const meteoDemo: Meteo = { temperature: 14, ciel: 'Nuageux' };
 
 export const moniteurs: Moniteur[] = [
   { id: 'm-benali', prenom: 'Karim', nom: 'Benali' },
@@ -140,6 +165,33 @@ export function construireLecons(maintenant: Date): Lecon[] {
       lieuFin: lieux.pontArc,
     },
     {
+      id: 'l-benhamou-12',
+      numero: 12,
+      eleveId: 'e-benhamou',
+      moniteurId: 'm-roux',
+      ...creneau(maintenant, 0, 1),
+      lieuDepart: lieux.agence,
+      lieuFin: lieux.zola,
+    },
+    {
+      id: 'l-nguyen-5',
+      numero: 5,
+      eleveId: 'e-nguyen',
+      moniteurId: 'm-ortiz',
+      ...creneau(maintenant, 0, 0),
+      lieuDepart: lieux.pontArc,
+      lieuFin: lieux.pontArc,
+    },
+    {
+      id: 'l-petit-9',
+      numero: 9,
+      eleveId: 'e-petit',
+      moniteurId: 'm-ortiz',
+      ...creneau(maintenant, 0, 3),
+      lieuDepart: lieux.agence,
+      lieuFin: lieux.gare,
+    },
+    {
       id: 'l-riva-3',
       numero: 3,
       eleveId: 'e-riva',
@@ -191,4 +243,25 @@ export const preferences: PreferencesEleve[] = [
   { eleveId: 'e-haddad', creneaux: [{ jour: 6, debut: '10:00', fin: '11:30' }], moniteursFavorisIds: ['m-benali', 'm-ortiz'] },
   { eleveId: 'e-benhamou', creneaux: [{ jour: 6, debut: '08:00', fin: '09:30' }], moniteursFavorisIds: ['m-benali'] },
   { eleveId: 'e-riva', creneaux: [{ jour: 6, debut: '09:00', fin: '12:00' }], moniteursFavorisIds: ['m-roux'] },
+];
+
+const dans = (jours: number) => {
+  const d = new Date();
+  d.setDate(d.getDate() + jours);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
+export const demandesAbsence: DemandeAbsence[] = [
+  { id: 'da-1', moniteurId: 'm-roux', du: dans(2), au: dans(3), motif: 'maladie', justificatifJoint: true, statut: 'en-attente' },
+  { id: 'da-2', moniteurId: 'm-ortiz', du: dans(20), au: dans(27), motif: 'conges', justificatifJoint: false, statut: 'en-attente' },
+];
+
+export const documentsRecus: DocumentRecu[] = [
+  { id: 'doc-1', eleveId: 'e-petit', titre: 'Photo d’identité', recuLe: new Date(Date.now() - 3 * 3_600_000).toISOString() },
+  { id: 'doc-2', eleveId: 'e-nguyen', titre: 'Attestation ASSR 2', recuLe: new Date(Date.now() - 26 * 3_600_000).toISOString() },
+];
+
+export const examensBlancs: ExamenBlanc[] = [
+  { id: 'eb-1', eleveId: 'e-haddad', evaluateurId: 'm-ortiz', date: dans(-1), reussi: true },
+  { id: 'eb-2', eleveId: 'e-benhamou', evaluateurId: 'm-benali', date: dans(-4), reussi: false },
 ];

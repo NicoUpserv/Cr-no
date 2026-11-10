@@ -1,21 +1,14 @@
 import { Tabs } from 'expo-router';
 
-import { Icone, type NomIcone } from '@/components/ui';
 import { useTheme } from '@/theme/use-theme';
 
-/**
- * Version web de la barre d'onglets : barre du bas classique.
- * (Sur iOS et Android, `_layout.tsx` utilise les onglets natifs du système.)
- */
-const onglets: { nom: string; titre: string; icone: NomIcone }[] = [
-  { nom: '(aujourdhui)', titre: 'Aujourd’hui', icone: 'calendrier' },
-  { nom: 'eleves', titre: 'Élèves', icone: 'document' },
-  { nom: 'planning', titre: 'Planning', icone: 'horloge' },
-  { nom: 'parcours', titre: 'Parcours', icone: 'route' },
-  { nom: 'plus', titre: 'Plus', icone: 'livret' },
-];
+import type { DefinitionOnglet } from './onglets';
+import { Icone } from './ui';
 
-export default function OngletsLayoutWeb() {
+export type { DefinitionOnglet } from './onglets';
+
+/** Version web : barre d'onglets du bas classique (les onglets natifs n'existent pas sur le web). */
+export function Onglets({ onglets }: { onglets: DefinitionOnglet[] }) {
   const { couleurs } = useTheme();
   return (
     <Tabs

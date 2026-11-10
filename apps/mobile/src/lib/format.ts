@@ -48,6 +48,26 @@ export function formatDans(debut: Date | string, fin: Date | string, maintenant 
   return `dans ${jours} jour${jours > 1 ? 's' : ''}`;
 }
 
+/** « il y a 5 min », « il y a 3 h », « il y a 2 jours » */
+export function formatIlYA(date: Date | string, maintenant = new Date()): string {
+  const d = typeof date === 'string' ? new Date(date) : date;
+  const minutes = Math.max(0, Math.round((maintenant.getTime() - d.getTime()) / 60_000));
+  if (minutes < 60) return `il y a ${minutes} min`;
+  const heures = Math.round(minutes / 60);
+  if (heures < 24) return `il y a ${heures} h`;
+  const jours = Math.round(heures / 24);
+  return `il y a ${jours} jour${jours > 1 ? 's' : ''}`;
+}
+
+/** « du 12 au 13 nov. » ou « le 12 nov. » à partir de dates « YYYY-MM-DD » */
+export function formatPeriode(du: string, au: string): string {
+  const d = new Date(`${du}T12:00:00`);
+  const a = new Date(`${au}T12:00:00`);
+  if (du === au) return `le ${formatDateCourte(d)}`;
+  if (d.getMonth() === a.getMonth()) return `du ${d.getDate()} au ${formatDateCourte(a)}`;
+  return `du ${formatDateCourte(d)} au ${formatDateCourte(a)}`;
+}
+
 /** « 1 fois », « 3 fois », « 0 fois » */
 export function formatFois(n: number): string {
   return `${n} fois`;

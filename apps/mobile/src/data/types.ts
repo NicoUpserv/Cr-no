@@ -125,3 +125,44 @@ export type PreferencesEleve = {
   creneaux: DisponibiliteRoutine[];
   moniteursFavorisIds: string[];
 };
+
+/* ----- Auto-école, direction et démonstration ----- */
+
+export type AutoEcole = {
+  nom: string;
+  ville: string;
+  /** Offre mise en avant auprès des élèves (promotion, parrainage…). */
+  offre?: { titre: string; texte: string };
+};
+
+/** Météo prévue au lieu et à l'heure d'une leçon. */
+export type Meteo = {
+  temperature: number;
+  ciel: string;
+};
+
+export type DemandeAbsence = {
+  id: string;
+  moniteurId: string;
+  du: string;
+  au: string;
+  motif: MotifAbsence;
+  justificatifJoint: boolean;
+  statut: 'en-attente' | 'acceptee' | 'refusee';
+};
+
+export type DocumentRecu = {
+  id: string;
+  eleveId: string;
+  titre: string;
+  recuLe: string;
+};
+
+export type ExamenBlanc = {
+  id: string;
+  eleveId: string;
+  /** Enseignant qui a fait passer l'examen blanc (jamais eu par l'élève). */
+  evaluateurId: string;
+  date: string;
+  reussi: boolean;
+};

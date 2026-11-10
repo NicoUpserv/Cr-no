@@ -1,5 +1,6 @@
 import { Stack, useRouter } from 'expo-router';
 
+import { SelecteurProfil } from '@/components/selecteur-profil';
 import { Ecran, Ligne, Section } from '@/components/ui';
 
 export default function EcranPlus() {
@@ -16,6 +17,7 @@ export default function EcranPlus() {
             onPress={() => router.push('/plus/disponibilites')}
           />
         </Section>
+        <SelecteurProfil />
       </Ecran>
     </>
   );

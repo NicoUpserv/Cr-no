@@ -23,6 +23,17 @@ export const icones = {
   horloge: { ios: 'clock', android: 'schedule', web: 'schedule' },
   route: { ios: 'road.lanes', android: 'road', web: 'road' },
   supprimer: { ios: 'trash', android: 'delete', web: 'delete' },
+  eleve: { ios: 'person.crop.circle', android: 'account_circle', web: 'account_circle' },
+  equipe: { ios: 'person.3', android: 'groups', web: 'groups' },
+  message: { ios: 'bubble.left.and.bubble.right', android: 'forum', web: 'forum' },
+  meteo: { ios: 'cloud.sun', android: 'partly_cloudy_day', web: 'partly_cloudy_day' },
+  offre: { ios: 'gift', android: 'redeem', web: 'redeem' },
+  valider: { ios: 'checkmark.circle', android: 'check_circle', web: 'check_circle' },
+  examen: { ios: 'flag.checkered', android: 'sports_score', web: 'sports_score' },
+  menu: { ios: 'line.3.horizontal', android: 'menu', web: 'menu' },
+  accueil: { ios: 'house', android: 'home', web: 'home' },
+  cours: { ios: 'play.rectangle', android: 'smart_display', web: 'smart_display' },
+  signature: { ios: 'signature', android: 'draw', web: 'draw' },
   ajouter: { ios: 'plus.circle.fill', android: 'add_circle', web: 'add_circle' },
 } as const satisfies Record<string, NomSymbole>;
 

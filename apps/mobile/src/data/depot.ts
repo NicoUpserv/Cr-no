@@ -2,8 +2,34 @@
  * Accès aux données. Pour l'instant : données fictives en mémoire.
  * Plus tard : Supabase. Les écrans n'importent QUE ce fichier, jamais `mock.ts`.
  */
-import { construireLecons, disponibilites, eleves, moniteurConnecteId, moniteurs, observations, preferences } from './mock';
-import type { DisponibilitesMoniteur, Eleve, Lecon, Moniteur, Observation, PreferencesEleve } from './types';
+import {
+  autoEcole,
+  construireLecons,
+  demandesAbsence,
+  disponibilites,
+  documentsRecus,
+  eleveConnecteId,
+  eleves,
+  examensBlancs,
+  meteoDemo,
+  moniteurConnecteId,
+  moniteurs,
+  observations,
+  preferences,
+} from './mock';
+import type {
+  AutoEcole,
+  DemandeAbsence,
+  DisponibilitesMoniteur,
+  DocumentRecu,
+  Eleve,
+  ExamenBlanc,
+  Lecon,
+  Meteo,
+  Moniteur,
+  Observation,
+  PreferencesEleve,
+} from './types';
 
 export function listerEleves(): Eleve[] {
   return eleves;
@@ -56,4 +82,49 @@ export function disponibilitesDuMoniteur(moniteurId: string): DisponibilitesMoni
 
 export function listerPreferences(): PreferencesEleve[] {
   return preferences;
+}
+
+/* ----- Démonstration : élève connecté, auto-école, direction ----- */
+
+export function infosAutoEcole(): AutoEcole {
+  return autoEcole;
+}
+
+export function idEleveConnecte(): string {
+  return eleveConnecteId;
+}
+
+/** Météo prévue pour une leçon (fictive tant qu'aucun service météo n'est branché). */
+export function meteoPourLecon(_lecon: Lecon): Meteo {
+  return meteoDemo;
+}
+
+export function listerMoniteurs(): Moniteur[] {
+  return moniteurs;
+}
+
+/** Toutes les leçons du jour, tous enseignants confondus. */
+export function leconsDuJour(maintenant = new Date()): Lecon[] {
+  const memeJour = (iso: string) => new Date(iso).toDateString() === maintenant.toDateString();
+  return construireLecons(maintenant)
+    .filter((l) => memeJour(l.debut))
+    .sort((a, b) => a.debut.localeCompare(b.debut));
+}
+
+export function demandesAbsenceEnAttente(): DemandeAbsence[] {
+  return demandesAbsence.filter((d) => d.statut === 'en-attente');
+}
+
+export function documentsAValider(): DocumentRecu[] {
+  return documentsRecus;
+}
+
+/** Élèves dont le dernier examen blanc est réussi : à placer sur une date d'examen. */
+export function elevesPretsPourLExamen(): { eleve: Eleve; examen: ExamenBlanc }[] {
+  return examensBlancs
+    .filter((e) => e.reussi)
+    .flatMap((examen) => {
+      const eleve = trouverEleve(examen.eleveId);
+      return eleve ? [{ eleve, examen }] : [];
+    });
 }
