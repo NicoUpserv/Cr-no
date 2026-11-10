@@ -1,7 +1,7 @@
 # Le cours avant la leçon — spécification
 
 Source : échanges avec le client (Tarek, enseignant), 10 novembre 2026, et vidéo de test « Bien freiner » validée par une élève.
-Statut : **à valider avec le client** (voir « Questions ouvertes »).
+Statut : **validé le 10/11/2026** (structure, quiz aléatoire avec réponses mélangées, trois états de suivi, charte des vidéos). Restent les « Questions ouvertes ».
 
 ## Principe
 
@@ -15,9 +15,9 @@ Avant chaque leçon de conduite, l'élève suit un cours d'environ **15 minutes*
 | 2. Fiche technique | ~5 min | Texte court, illustré, découpé en étapes. Lisible sur téléphone. |
 | 3. Quiz | ~3 min | Questions tirées au hasard dans une banque (voir règles ci-dessous). |
 | 4. Bilan | ~1 min | Les points à retenir. **À préciser avec le client** (voir questions). |
-| 5. Ce que dit la loi | ~1 min | Article, amende, points retirés, risque de suspension ou de prison, et le conseil pratique. **Avec la source et la date de vérification.** |
+| 5. Ce que dit la loi | ~1 min | Article, amende, points retirés, risque de suspension ou de prison, et le conseil pratique, tels que rédigés par l'auto-école. |
 
-Exemple fourni par le client : cours « Freinage », une vidéo par type de freinage (dégressif, progressif, linéaire, d'urgence).
+Exemple fourni par le client, à titre d'illustration seulement (le cours « Freinage » n'est pas à intégrer tel quel ; il sera refait) : une vidéo par type de freinage (dégressif, progressif, linéaire, d'urgence).
 
 ## Règles du quiz
 
@@ -40,20 +40,15 @@ Trois états au lieu de « consulté / non consulté » :
 
 Bonus utile pour l'enseignant : les questions les plus ratées par l'élève, pour savoir quoi travailler en voiture.
 
-## « Ce que dit la loi » : exigence de fiabilité
+## « Ce que dit la loi »
 
-Les montants, points et sanctions changent et sont faciles à mal recopier. Chaque bloc « loi » doit contenir :
-- le texte en langage simple ;
-- la **référence** (article du Code de la route, lien Légifrance) ;
-- la **date de dernière vérification**.
-
-L'appli affichera « vérifié le … ». Sans référence, le bloc n'est pas publié.
-⚠️ Dans l'exemple « ampoule grillée », certains montants sont à revérifier avant publication (par exemple, « feu stop = 135 € + 4 points » me paraît mélanger le défaut d'un feu et la circulation de nuit sans éclairage).
+Le contenu est celui du cours de l'auto-école : **l'appli l'affiche tel quel, sans le modifier** (décision du 10/11/2026). L'auto-école en est responsable.
+Champs facultatifs mis à disposition : référence (article, lien Légifrance) et date de mise à jour, affichée « mis à jour le … » si renseignée.
 
 ## Contenus : production et format
 
 - **Vidéos** : motion design (style de la vidéo de test « Bien freiner » : schémas animés, étapes numérotées, synthèse finale). Production possible avec Claude Code (skills hyperframes / remotion), voix off, version verticale et horizontale.
-- **Cohérence visuelle** : la vidéo de test utilise un bleu nuit et un orange ; l'appli utilise l'univers « La route » (bleu de panneau, jaune de signalisation, police condensée). Il faudra aligner les deux pour que cours et appli forment une seule identité (même bleu, même jaune à la place de l'orange, même police condensée).
+- **Charte graphique (décidé)** : les vidéos suivent la charte de Créno, univers « La route » : bleu de panneau, jaune de signalisation à la place de l'orange de la vidéo de test, police condensée Barlow Condensed, mêmes pictogrammes. Référence : `apps/mobile/src/theme/tokens.ts` (et `DESIGN.md` quand il existera).
 - **Saisie des contenus** : le client doit pouvoir créer et modifier un cours (vidéos, fiche, banque de questions, bilan, loi) sans passer par un développeur. → Prévoir un **éditeur de cours** dans l'espace direction (phase 2), ou un import depuis un modèle Word / tableur en attendant.
 - **Hébergement vidéo** : Bunny Stream (Europe), lecture adaptée à la connexion de l'élève.
 
