@@ -31,6 +31,17 @@ Un cours peut donc réunir plusieurs vidéos et plusieurs fiches sur un même th
    - **le client valide** chaque question proposée avant qu'elle entre dans la banque. Jamais de question générée et montrée directement à l'élève.
 6. Ton : tutoiement, phrases courtes, vocabulaire d'auto-école (cf. `apps/mobile/PRODUCT.md`).
 
+## Quiz verrouillé tant que le cours n'est pas suivi (décision du 11/11/2026)
+
+Le quiz ne s'ouvre que si l'élève a vraiment suivi les étapes précédentes, **surtout les vidéos** :
+- **Vidéos** : chaque vidéo doit être regardée en entier (au moins 95 % de sa durée). L'avance rapide n'est pas autorisée au premier visionnage ; le temps réellement regardé est mesuré, pas seulement le fait d'avoir ouvert la vidéo.
+- **Fiches techniques** : chaque fiche doit être ouverte et parcourue jusqu'en bas.
+- Tant que ce n'est pas fait, le bouton du quiz est grisé, avec ce qui reste à faire (« Il te reste la vidéo 2 et la fiche 1 »).
+- **Après un quiz raté**, l'élève peut le refaire directement : on lui recommande de revoir la vidéo et la fiche, sans l'y obliger (à confirmer, voir questions).
+- L'enseignant voit, en plus du score, si les vidéos ont été regardées en entier.
+
+Limite honnête : on vérifie que la vidéo a défilé jusqu'au bout, pas que l'élève l'a regardée attentivement (il peut poser son téléphone).
+
 ## Ce que voit l'enseignant
 
 Trois états au lieu de « consulté / non consulté » :
@@ -140,5 +151,6 @@ Le type actuel `CoursPrealable` (`ouvertures`) sera remplacé par `SuiviCours`.
 
 ## Points à suivre
 
+0. **Quiz raté** : l'élève doit-il revoir obligatoirement la vidéo et la fiche avant de refaire le quiz, ou seulement le refaire ? (Par défaut : simple recommandation.)
 1. **Origine des questions** : règle valable « pour l'instant », à revoir avec le client plus tard.
 2. **Droits sur le catalogue Créno** (pris en compte, à régler avant la commercialisation) : « on va fournir des cours » — le catalogue doit appartenir à Créno. Si des cours viennent de l'auto-école où travaille le client (« c'est le cours de son auto-école »), il faut l'accord écrit de son propriétaire (l'auto-école ou son gérant), ou que Créno produise ses propres versions. **À régler avant la commercialisation.** Les cours ajoutés par une auto-école restent sa propriété (à préciser dans les conditions d'utilisation).
