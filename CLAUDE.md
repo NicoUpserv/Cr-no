@@ -11,6 +11,6 @@ Toujours être honnête avec l'utilisateur, dans toutes les sessions et fenêtre
 ## Repères du projet
 
 - Produit : `apps/mobile/PRODUCT.md`. Règles de code et de design : `apps/mobile/AGENTS.md`.
-- Spécifications fonctionnelles : `docs/` (`docs/cours-avant-lecon.md`, `docs/fiche-de-lecon.md`).
+- Spécifications fonctionnelles : `docs/` (`docs/cours-avant-lecon.md`, `docs/fiche-de-lecon.md`), benchmark : `docs/benchmark-stych.md`.
 - Fiches de tâche pour l'exécutant (DeepSeek V4.1 Flash via opencode) : `tasks/`. Rapport du test : `tasks/RAPPORT-TEST-EXECUTANTS.md`.
 - Langue : français partout (code, commentaires, interface).
