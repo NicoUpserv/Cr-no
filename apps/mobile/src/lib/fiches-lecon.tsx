@@ -7,8 +7,17 @@
  */
 import { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
 
-import { fichesInitiales } from '@/data/depot';
+import type { EtapeProgression } from '@/components/ui';
+import {
+  fichesInitiales,
+  libelleCompetence,
+  listerCours,
+  listerSousCompetences,
+  trouverSousCompetence,
+} from '@/data/depot';
+import type { Eleve } from '@/data/types';
 import { corrigerFiche, versionEleve } from '@/features/fiches/fiche';
+import { calculerProgression, coursAReproposer } from '@/features/fiches/progression';
 import type { ChampCorrigeable, FicheLecon, FicheVueEleve, RoleEquipe } from '@/features/fiches/types';
 
 type Contexte = {
@@ -64,4 +73,27 @@ export function useFichesDeLEleve(eleveId: string): FicheLecon[] {
 /** Vue élève : sans observation interne ni signalement. */
 export function useFichesVueEleve(eleveId: string): FicheVueEleve[] {
   return useFichesDeLEleve(eleveId).map(versionEleve);
+}
+
+/** Progression C1 à C4 : livret repris + appréciations des fiches (prête pour `BandeProgression`). */
+export function useProgressionEleve(eleve: Eleve | undefined): EtapeProgression[] {
+  const fiches = useFichesDeLEleve(eleve?.id ?? '');
+  if (!eleve) return [];
+  return calculerProgression(listerSousCompetences(), eleve.sousCompetencesAcquisesIds, fiches).map((c) => ({
+    ...c,
+    libelle: libelleCompetence(c.code),
+  }));
+}
+
+/**
+ * Cours reproposés à l'élève après une appréciation « non maîtrisé »,
+ * sauf celui déjà prévu pour sa prochaine leçon.
+ */
+export function useCoursAReproposer(eleveId: string, coursDejaPrevuId?: string) {
+  const fiches = useFichesDeLEleve(eleveId);
+  return coursAReproposer(listerCours(), fiches, coursDejaPrevuId).map(({ cours, motif }) => ({
+    cours,
+    motif,
+    sousCompetence: trouverSousCompetence(motif.sousCompetenceId),
+  }));
 }

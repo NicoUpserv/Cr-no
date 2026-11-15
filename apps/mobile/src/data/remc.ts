@@ -11,6 +11,13 @@ const c = (competence: CodeCompetence, lettre: string, libelle: string): SousCom
   libelle,
 });
 
+export const libellesCompetences: Record<CodeCompetence, string> = {
+  C1: 'Maîtriser le maniement du véhicule',
+  C2: 'Appréhender la route',
+  C3: 'Circuler dans des conditions difficiles',
+  C4: 'Pratiquer une conduite autonome et sûre',
+};
+
 export const sousCompetencesB: SousCompetence[] = [
   c('C1', 'a', 'Connaître les principaux organes et commandes, faire les vérifications intérieures et extérieures'),
   c('C1', 'b', 'Entrer, s’installer au poste de conduite et en sortir'),

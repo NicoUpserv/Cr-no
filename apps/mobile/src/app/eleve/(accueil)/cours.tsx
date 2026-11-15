@@ -4,7 +4,7 @@
  * Contenus protégés : pas de téléchargement, pas d'image dans l'image, captures bloquées.
  */
 import { useEventListener } from 'expo';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useMemo, useRef, useState, type ComponentRef } from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions, View, type NativeScrollEvent } from 'react-native';
@@ -270,9 +270,12 @@ export default function LecteurCours() {
   useProtectionContenu('lecteur-cours');
   const defilement = useRef<ComponentRef<typeof ScrollView>>(null);
 
+  // `coursId` : cours reproposé après « non maîtrisé ». Sinon, le cours de la prochaine leçon.
+  const { coursId } = useLocalSearchParams<{ coursId?: string }>();
   const eleveId = idEleveConnecte();
-  const lecon = prochaineLecon(eleveId);
-  const cours = trouverCours(lecon?.cours?.coursId);
+  const prochaine = prochaineLecon(eleveId);
+  const lecon = !coursId || prochaine?.cours?.coursId === coursId ? prochaine : undefined;
+  const cours = trouverCours(coursId ?? lecon?.cours?.coursId);
   const { suivi, enregistrer } = useSuiviCours(eleveId, cours?.id);
   const { progression, majProgression } = useProgressionCours(eleveId, cours);
   const hauteurVue = useRef(0);

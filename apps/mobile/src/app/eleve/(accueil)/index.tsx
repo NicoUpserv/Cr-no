@@ -21,7 +21,7 @@ import {
 import { DetailFiche } from '@/components/detail-fiche';
 import { alerteEleve } from '@/features/cours/alertes';
 import { formatDans, formatDateCourte, formatHeure, formatJour, formatPiecesManquantes } from '@/lib/format';
-import { useFichesVueEleve } from '@/lib/fiches-lecon';
+import { useCoursAReproposer, useFichesVueEleve, useProgressionEleve } from '@/lib/fiches-lecon';
 import { ouvrirItineraire } from '@/lib/itineraire';
 import { useSuiviCours } from '@/lib/suivi-cours';
 
@@ -34,6 +34,8 @@ export default function AccueilEleve() {
   const { suivi } = useSuiviCours(eleve?.id ?? '', cours?.id);
   // Vue élève : l'observation interne et les signalements ne sont jamais affichés.
   const [derniereFiche] = useFichesVueEleve(eleve?.id ?? '');
+  const progression = useProgressionEleve(eleve);
+  const aRevoir = useCoursAReproposer(eleve?.id ?? '', cours?.id);
   if (!eleve) return null;
 
   const moniteur = lecon ? trouverMoniteur(lecon.moniteurId) : undefined;
@@ -83,6 +85,20 @@ export default function AccueilEleve() {
           </Section>
         ) : null}
 
+        {aRevoir.length > 0 ? (
+          <Section titre="À revoir avant ta prochaine leçon" pied="Ton enseignant a noté ces points « non maîtrisé ». Le cours t’aide à les travailler.">
+            {aRevoir.map(({ cours: c, motif, sousCompetence }) => (
+              <Ligne
+                key={c.id}
+                icone="cours"
+                titre={`Revoir le cours : ${c.titre}`}
+                sousTitre={`L${motif.numeroLecon} du ${formatDateCourte(motif.date)} · ${sousCompetence?.libelle ?? motif.sousCompetenceId}`}
+                onPress={() => router.push({ pathname: '/eleve/cours', params: { coursId: c.id } })}
+              />
+            ))}
+          </Section>
+        ) : null}
+
         {derniereFiche ? (
           <DetailFiche
             vue="eleve"
@@ -92,14 +108,7 @@ export default function AccueilEleve() {
         ) : null}
 
         <Section titre="Ma progression" forme="libre">
-          <BandeProgression
-            etapes={eleve.competences.map((c) => ({
-              code: c.code,
-              libelle: c.libelle,
-              acquises: c.sousCompetencesAcquises,
-              total: c.sousCompetencesTotal,
-            }))}
-          />
+          <BandeProgression etapes={progression} />
         </Section>
 
         <Section titre="Mon dossier">

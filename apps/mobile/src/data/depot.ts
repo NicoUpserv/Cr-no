@@ -3,10 +3,10 @@
  * Plus tard : Supabase. Les écrans n'importent QUE ce fichier, jamais `mock.ts`.
  */
 import type { Cours } from '@/features/cours/types';
-import type { FicheLecon, SousCompetence } from '@/features/fiches/types';
+import type { CodeCompetence, FicheLecon, SousCompetence } from '@/features/fiches/types';
 
-import { coursInsertionDemo } from './cours-demo';
-import { sousCompetencesB } from './remc';
+import { coursInsertionDemo, coursPrioritesDemo } from './cours-demo';
+import { libellesCompetences, sousCompetencesB } from './remc';
 import {
   autoEcole,
   construireLecons,
@@ -162,8 +162,16 @@ export function elevesPretsPourLExamen(): { eleve: Eleve; examen: ExamenBlanc }[
 
 /* ----- Cours avant la leçon ----- */
 
-const catalogueCours: Cours[] = [coursInsertionDemo];
+const catalogueCours: Cours[] = [coursInsertionDemo, coursPrioritesDemo];
+
+export function listerCours(): Cours[] {
+  return catalogueCours;
+}
 
 export function trouverCours(coursId: string | undefined): Cours | undefined {
   return coursId ? catalogueCours.find((c) => c.id === coursId) : undefined;
+}
+
+export function libelleCompetence(code: CodeCompetence): string {
+  return libellesCompetences[code];
 }

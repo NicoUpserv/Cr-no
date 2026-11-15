@@ -7,7 +7,7 @@ function creerEleve(infos: Pick<Eleve, 'id' | 'prenom' | 'nom'> & Partial<Eleve>
     telephone: '06 00 00 00 00',
     permis: 'B',
     forfaitLecons: 20,
-    competences: [],
+    sousCompetencesAcquisesIds: [],
     piecesManquantes: [],
     moniteursFavorisIds: [],
     ...infos,

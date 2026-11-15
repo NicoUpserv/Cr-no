@@ -18,6 +18,8 @@ import type {
 } from './types';
 import type { FicheLecon } from '@/features/fiches/types';
 
+import { sousCompetencesB } from './remc';
+
 export const autoEcole: AutoEcole = {
   nom: 'Auto-école du Cours',
   ville: 'Aix-en-Provence',
@@ -39,13 +41,14 @@ export const moniteurs: Moniteur[] = [
 /** Enseignant connecté dans la démonstration. */
 export const moniteurConnecteId = 'm-benali';
 
+/** Livret repris de l'ancien logiciel : les n premières sous-compétences de C1, C2, C3, C4 sont acquises. */
 const competencesB = (acquises: [number, number, number, number]) =>
-  [
-    { code: 'C1', libelle: 'Maîtriser le maniement du véhicule', sousCompetencesTotal: 9, sousCompetencesAcquises: acquises[0] },
-    { code: 'C2', libelle: 'Appréhender la route', sousCompetencesTotal: 7, sousCompetencesAcquises: acquises[1] },
-    { code: 'C3', libelle: 'Circuler dans des conditions difficiles', sousCompetencesTotal: 9, sousCompetencesAcquises: acquises[2] },
-    { code: 'C4', libelle: 'Pratiquer une conduite autonome et sûre', sousCompetencesTotal: 7, sousCompetencesAcquises: acquises[3] },
-  ] as Eleve['competences'];
+  (['C1', 'C2', 'C3', 'C4'] as const).flatMap((code, i) =>
+    sousCompetencesB
+      .filter((s) => s.competence === code)
+      .slice(0, acquises[i])
+      .map((s) => s.id),
+  );
 
 export const eleves: Eleve[] = [
   {
@@ -55,7 +58,7 @@ export const eleves: Eleve[] = [
     telephone: '06 12 34 56 78',
     permis: 'B',
     forfaitLecons: 20,
-    competences: competencesB([6, 5, 3, 0]),
+    sousCompetencesAcquisesIds: competencesB([6, 5, 3, 0]),
     piecesManquantes: ['Justificatif de domicile', 'Attestation ASSR 2'],
     moniteursFavorisIds: ['m-benali'],
   },
@@ -66,7 +69,7 @@ export const eleves: Eleve[] = [
     telephone: '06 98 76 54 32',
     permis: 'B-AAC',
     forfaitLecons: 20,
-    competences: competencesB([2, 0, 0, 0]),
+    sousCompetencesAcquisesIds: competencesB([2, 0, 0, 0]),
     piecesManquantes: [],
     moniteursFavorisIds: ['m-roux'],
   },
@@ -77,7 +80,7 @@ export const eleves: Eleve[] = [
     telephone: '07 11 22 33 44',
     permis: 'B',
     forfaitLecons: 25,
-    competences: competencesB([6, 7, 7, 4]),
+    sousCompetencesAcquisesIds: competencesB([6, 7, 7, 4]),
     piecesManquantes: [],
     moniteursFavorisIds: ['m-benali', 'm-ortiz'],
   },
@@ -88,7 +91,7 @@ export const eleves: Eleve[] = [
     telephone: '06 55 44 33 22',
     permis: 'B-auto',
     forfaitLecons: 13,
-    competences: competencesB([6, 4, 0, 0]),
+    sousCompetencesAcquisesIds: competencesB([6, 4, 0, 0]),
     piecesManquantes: ['Photo d’identité'],
     moniteursFavorisIds: [],
   },
@@ -99,7 +102,7 @@ export const eleves: Eleve[] = [
     telephone: '06 77 88 99 00',
     permis: 'B-CS',
     forfaitLecons: 20,
-    competences: competencesB([6, 7, 5, 0]),
+    sousCompetencesAcquisesIds: competencesB([6, 7, 5, 0]),
     piecesManquantes: [],
     moniteursFavorisIds: ['m-benali'],
   },
@@ -110,7 +113,7 @@ export const eleves: Eleve[] = [
     telephone: '07 66 55 44 33',
     permis: 'A2',
     forfaitLecons: 20,
-    competences: competencesB([4, 1, 0, 0]),
+    sousCompetencesAcquisesIds: competencesB([4, 1, 0, 0]),
     piecesManquantes: ['Attestation ASSR 2', 'Pièce d’identité'],
     moniteursFavorisIds: ['m-ortiz'],
   },

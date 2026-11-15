@@ -24,7 +24,7 @@ import { alerteEnseignant } from '@/features/cours/alertes';
 import { meilleurScore } from '@/features/cours/quiz';
 import { dernierSignalement } from '@/features/fiches/fiche';
 import { formatDans, formatDateCourte, formatHeure, formatJour, formatPiecesManquantes } from '@/lib/format';
-import { useFichesDeLEleve } from '@/lib/fiches-lecon';
+import { useCoursAReproposer, useFichesDeLEleve, useProgressionEleve } from '@/lib/fiches-lecon';
 import { ouvrirItineraire } from '@/lib/itineraire';
 import { useSuiviCours } from '@/lib/suivi-cours';
 import { useTheme } from '@/theme/use-theme';
@@ -38,6 +38,8 @@ export function EcranFicheEleve() {
   const cours = trouverCours(lecon?.cours?.coursId);
   const { suivi } = useSuiviCours(eleve?.id ?? '', cours?.id);
   const fiches = useFichesDeLEleve(eleve?.id ?? '');
+  const progression = useProgressionEleve(eleve);
+  const aRevoir = useCoursAReproposer(eleve?.id ?? '', cours?.id);
 
   if (!eleve) {
     return (
@@ -107,15 +109,21 @@ export function EcranFicheEleve() {
         ) : null}
 
         <Section titre="Progression" forme="libre">
-          <BandeProgression
-            etapes={eleve.competences.map((c) => ({
-              code: c.code,
-              libelle: c.libelle,
-              acquises: c.sousCompetencesAcquises,
-              total: c.sousCompetencesTotal,
-            }))}
-          />
+          <BandeProgression etapes={progression} />
         </Section>
+
+        {aRevoir.length > 0 ? (
+          <Section titre="Cours reproposés à l’élève" pied="Après une appréciation « non maîtrisé ». L’élève les voit sur son accueil.">
+            {aRevoir.map(({ cours: c, motif, sousCompetence }) => (
+              <Ligne
+                key={c.id}
+                icone="cours"
+                titre={c.titre}
+                sousTitre={`Non maîtrisé en L${motif.numeroLecon} · ${sousCompetence?.libelle ?? motif.sousCompetenceId}`}
+              />
+            ))}
+          </Section>
+        ) : null}
 
         {derniereFiche ? (
           <DetailFiche vue="equipe" fiche={derniereFiche} titre={`Dernière leçon · L${derniereFiche.numeroLecon} · ${formatDateCourte(derniereFiche.date)}`} />

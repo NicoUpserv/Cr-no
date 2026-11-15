@@ -18,13 +18,6 @@ export const libellesPermis: Record<TypePermis, string> = {
 
 export type CodeCompetence = 'C1' | 'C2' | 'C3' | 'C4';
 
-export type Competence = {
-  code: CodeCompetence;
-  libelle: string;
-  sousCompetencesTotal: number;
-  sousCompetencesAcquises: number;
-};
-
 export type Lieu = {
   nom: string;
   adresse: string;
@@ -44,7 +37,11 @@ export type Eleve = {
   permis: TypePermis;
   /** Nombre de leçons prévues au forfait. */
   forfaitLecons: number;
-  competences: Competence[];
+  /**
+   * Sous-compétences du livret acquises AVANT les fiches de leçon Créno (livret repris de l'ancien logiciel).
+   * La progression affichée y ajoute les appréciations des fiches (features/fiches/progression).
+   */
+  sousCompetencesAcquisesIds: string[];
   piecesManquantes: string[];
   moniteursFavorisIds: string[];
 };

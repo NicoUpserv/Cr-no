@@ -68,3 +68,59 @@ export const coursInsertionDemo: Cours = {
       'Ne pas céder le passage aux véhicules déjà sur la voie rapide, c’est un refus de priorité. Pour info, cela peut coûter une amende, un retrait de points et une suspension de permis. (Contenu de démonstration : la partie « loi » sera celle de ton auto-école.)',
   },
 };
+
+/**
+ * Second cours de DÉMONSTRATION : « Priorités aux intersections ».
+ * Sert à montrer le cours reproposé après une appréciation « non maîtrisé ».
+ * Contenu rédigé pour la démo, à faire valider par l'auto-école.
+ */
+export const coursPrioritesDemo: Cours = {
+  id: 'cours-priorites-intersections',
+  titre: 'Priorités aux intersections',
+  competence: 'C2',
+  sousCompetencesIds: ['c2-d', 'c2-a'],
+  demonstration: true,
+  videos: [
+    { titre: 'Céder le passage ou non ?', source: require('../../assets/demo/priorites-1.mp4'), dureeSecondes: 8 },
+    { titre: 'La priorité à droite', source: require('../../assets/demo/priorites-2.mp4'), dureeSecondes: 8 },
+  ],
+  fiches: [
+    {
+      titre: 'Lire l’intersection',
+      etapes: [
+        { titre: 'Cherche les panneaux tôt', texte: 'Avant chaque intersection, repère le panneau qui l’annonce : il te dit qui passe en premier.' },
+        { titre: 'Stop', texte: 'Arrêt complet à la limite de la chaussée, même si personne ne vient. Ensuite, tu cèdes le passage.' },
+        { titre: 'Cédez-le-passage', texte: 'Tu laisses passer ceux qui circulent sur la route que tu abordes. Si c’est libre, tu n’es pas obligé de t’arrêter.' },
+        { titre: 'Route prioritaire', texte: 'Le losange jaune t’indique que tu es prioritaire aux intersections, jusqu’au panneau de fin.' },
+      ],
+    },
+    {
+      titre: 'La priorité à droite',
+      etapes: [
+        { titre: 'Quand elle s’applique', texte: 'Sans panneau ni feu, ou avec le triangle à croix noire : le véhicule qui arrive de ta droite passe avant toi.' },
+        { titre: 'Ralentis et regarde', texte: 'À l’approche, lève le pied, regarde à droite et sois prêt à t’arrêter.' },
+        { titre: 'Même prioritaire, reste prudent', texte: 'Être prioritaire ne te donne jamais le droit de forcer le passage.' },
+      ],
+    },
+  ],
+  nbQuestionsAffichees: 6,
+  seuilReussite: 5,
+  banqueQuestions: [
+    q('pri-1', 'À une intersection sans panneau ni feu, qui passe en premier ?', 'Le véhicule qui arrive de droite', ['Le véhicule qui va tout droit', 'Le plus rapide'], 'Sans signalisation, c’est la priorité à droite qui s’applique.'),
+    q('pri-2', 'Au panneau Stop, la voie est libre. Que fais-tu ?', 'Je m’arrête complètement, puis je repars', ['Je ralentis et je passe', 'Je passe sans ralentir'], 'L’arrêt est obligatoire au Stop, même quand personne ne vient.'),
+    q('pri-3', 'Au panneau Cédez-le-passage, la voie est libre. Que fais-tu ?', 'Je peux passer sans m’arrêter', ['Je dois m’arrêter complètement', 'Je klaxonne avant de passer'], 'Au Cédez-le-passage, l’arrêt n’est obligatoire que si quelqu’un arrive.'),
+    q('pri-4', 'Que t’indique le losange jaune bordé de blanc ?', 'Je suis sur une route prioritaire', ['Une priorité à droite', 'Un danger de chaussée glissante'], 'Tu es prioritaire aux intersections jusqu’au panneau de fin de route prioritaire.'),
+    q('pri-5', 'Le triangle avec une croix noire annonce…', 'Une intersection où s’applique la priorité à droite', ['Un passage à niveau', 'Une route prioritaire'], 'C’est le panneau qui t’avertit que la priorité à droite va s’appliquer.'),
+    q('pri-6', 'Tu sors d’un parking sur une route. Qui est prioritaire ?', 'Les véhicules qui circulent sur la route', ['Moi, s’ils arrivent de ma gauche', 'Le premier arrivé'], 'En sortant d’un parking, d’un chemin de terre ou d’une propriété, tu cèdes le passage à tous.'),
+    q('pri-7', 'À l’approche d’une priorité à droite, tu…', 'Ralentis et regardes à droite', ['Accélères pour passer avant', 'Gardes ta vitesse en regardant devant'], 'Ralentir te laisse le temps de t’arrêter si un véhicule arrive de droite.'),
+    q('pri-8', 'Tu es prioritaire mais une voiture te coupe la route. Que fais-tu ?', 'Je freine pour éviter l’accident', ['Je garde ma trajectoire, j’ai la priorité', 'J’accélère pour passer avant elle'], 'La priorité ne protège pas d’un choc : il faut toujours pouvoir l’éviter.'),
+    q('pri-9', 'Un agent fait la circulation à un carrefour avec feux. Tu suis…', 'Les gestes de l’agent', ['Le feu', 'Les panneaux'], 'Les indications de l’agent l’emportent sur les feux et les panneaux.'),
+    q('pri-10', 'Le triangle pointe en bas t’oblige à…', 'Céder le passage', ['T’arrêter dans tous les cas', 'Rouler au pas'], 'C’est le panneau Cédez-le-passage : tu laisses passer ceux de la route que tu abordes.'),
+    q('pri-11', 'Quand dois-tu chercher le panneau d’une intersection ?', 'Le plus tôt possible, avant d’y arriver', ['Une fois dans l’intersection', 'Seulement en ville'], 'Repérer tôt la règle te laisse le temps d’adapter ta vitesse.'),
+    q('pri-12', 'Feu orange fixe : que fais-tu ?', 'Je m’arrête, sauf si je ne peux pas le faire en sécurité', ['J’accélère pour passer', 'Je passe toujours'], 'Le feu orange impose l’arrêt, sauf si un freinage brusque serait dangereux.'),
+  ],
+  loi: {
+    texte:
+      'Ne pas respecter un Stop ou un Cédez-le-passage, c’est un refus de priorité : amende, retrait de points et suspension de permis possibles. (Contenu de démonstration : la partie « loi » sera celle de ton auto-école.)',
+  },
+};
