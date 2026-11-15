@@ -1,78 +1,115 @@
-/** Planning de l'enseignant : ses leçons et ses créneaux libres, jour par jour sur deux semaines. Vouvoiement. */
+/**
+ * Planning de l'enseignant, en jour / semaine / mois / année :
+ * ses leçons, ses créneaux libres et ses absences. Vouvoiement.
+ */
 import { Stack, useRouter } from 'expo-router';
-import { useState } from 'react';
 
-import { ChoixJour } from '@/components/choix-jour';
-import { Cartouche, Ecran, Ligne, Section } from '@/components/ui';
+import { BarrePeriode, VueAnnee, VueMois, VueSemaine, type ElementCalendrier } from '@/components/calendrier';
+import { Cartouche, ChoixSegmente, Ecran, Ligne, Section } from '@/components/ui';
 import { idMoniteurConnecte, trouverEleve } from '@/data/depot';
 import { libellesMotifAbsence } from '@/data/types';
-import { absenceLe, dateLocale, joursAVenir } from '@/features/planning/creneaux';
+import { compterParJour, joursSemaine, VUES } from '@/features/planning/calendrier';
+import { absenceLe } from '@/features/planning/creneaux';
 import { leconsDuJour, leconsDuMoniteur } from '@/features/planning/lecons';
 import { formatHeure } from '@/lib/format';
 import { usePlanning } from '@/lib/planning';
+import { useCalendrier } from '@/lib/use-calendrier';
 
 export default function PlanningEnseignant() {
   const router = useRouter();
   const planning = usePlanning();
   const { maintenant } = planning;
   const moniteurId = idMoniteurConnecte();
-  const jours = joursAVenir(maintenant, 14);
-  const [jour, setJour] = useState(() => dateLocale(maintenant));
+  const cal = useCalendrier(maintenant);
+  const { date: jour } = cal;
 
   const siennes = leconsDuMoniteur(planning.lecons, moniteurId);
+  const dispos = planning.disponibilites(moniteurId);
+  const ouvrirEleve = (eleveId: string) => router.push({ pathname: '/eleves/[id]', params: { id: eleveId } });
+  const nomCourt = (eleveId: string) => {
+    const e = trouverEleve(eleveId);
+    return e ? `${e.prenom} ${e.nom.charAt(0)}.` : 'Élève';
+  };
+
+  const semaine = joursSemaine(jour);
+  const elementsSemaine: ElementCalendrier[] = [
+    ...siennes.map((l) => ({
+      id: l.id,
+      debut: l.debut,
+      fin: l.fin,
+      titre: nomCourt(l.eleveId),
+      type: 'lecon' as const,
+      onPress: () => ouvrirEleve(l.eleveId),
+    })),
+    ...semaine.flatMap((j) =>
+      planning.creneauxLibres(moniteurId, j).map((c) => ({ id: `libre-${c.debut}`, debut: c.debut, fin: c.fin, titre: 'libre', type: 'libre' as const })),
+    ),
+  ];
+
   const lecons = leconsDuJour(siennes, jour);
   const libres = planning.creneauxLibres(moniteurId, jour);
-  const absence = absenceLe(planning.disponibilites(moniteurId), jour);
-  const resume = (j: string) => {
-    const n = leconsDuJour(siennes, j).length;
-    return n === 0 ? 'aucune leçon' : `${n} leçon${n > 1 ? 's' : ''}`;
-  };
+  const absence = absenceLe(dispos, jour);
 
   return (
     <>
       <Stack.Screen options={{ title: 'Planning' }} />
       <Ecran>
-        <Section>
-          <ChoixJour jours={jours} valeur={jour} onChange={setJour} maintenant={maintenant} resume={resume} />
-        </Section>
+        <ChoixSegmente valeur={cal.vue} options={VUES} onChange={cal.setVue} accessibilityLabel="Affichage du planning" />
+        <BarrePeriode titre={cal.titre} onPrecedent={cal.precedent} onSuivant={cal.suivant} onAujourdhui={cal.aujourdhui} />
 
-        {absence ? (
-          <Section>
-            <Ligne icone="calendrier" titre={`Absent : ${libellesMotifAbsence[absence.motif].toLowerCase()}`} sousTitre="Aucun créneau proposé aux élèves ce jour-là." />
-          </Section>
+        {cal.vue === 'jour' ? (
+          <>
+            {absence ? (
+              <Section>
+                <Ligne icone="calendrier" titre={`Absent : ${libellesMotifAbsence[absence.motif].toLowerCase()}`} sousTitre="Aucun créneau proposé aux élèves ce jour-là." />
+              </Section>
+            ) : null}
+            <Section titre="Leçons">
+              {lecons.length === 0 ? (
+                <Ligne titre="Aucune leçon ce jour-là" />
+              ) : (
+                lecons.map((lecon) => {
+                  const eleve = trouverEleve(lecon.eleveId);
+                  const terminee = new Date(lecon.fin) <= maintenant;
+                  return (
+                    <Ligne
+                      key={lecon.id}
+                      titre={`${formatHeure(lecon.debut)} → ${formatHeure(lecon.fin)} · ${eleve ? `${eleve.prenom} ${eleve.nom}` : 'Élève'}`}
+                      sousTitre={`${lecon.lieuDepart.nom}${terminee ? ' · terminée' : ''}`}
+                      aDroite={<Cartouche numero={lecon.numero} />}
+                      onPress={() => ouvrirEleve(lecon.eleveId)}
+                    />
+                  );
+                })
+              )}
+            </Section>
+            {absence ? null : (
+              <Section titre="Créneaux libres" pied="Visibles par les élèves de l’auto-école, qui peuvent les réserver.">
+                {libres.length === 0 ? (
+                  <Ligne titre="Aucun créneau libre" sousTitre="Ajoutez une ouverture ponctuelle dans vos disponibilités." />
+                ) : (
+                  libres.map((c) => <Ligne key={c.debut} icone="horloge" titre={`${formatHeure(c.debut)} → ${formatHeure(c.fin)}`} sousTitre="Libre" />)
+                )}
+              </Section>
+            )}
+          </>
         ) : null}
 
-        <Section titre="Leçons">
-          {lecons.length === 0 ? (
-            <Ligne titre="Aucune leçon ce jour-là" />
-          ) : (
-            lecons.map((lecon) => {
-              const eleve = trouverEleve(lecon.eleveId);
-              const terminee = new Date(lecon.fin) <= maintenant;
-              return (
-                <Ligne
-                  key={lecon.id}
-                  titre={`${formatHeure(lecon.debut)} → ${formatHeure(lecon.fin)} · ${eleve ? `${eleve.prenom} ${eleve.nom}` : 'Élève'}`}
-                  sousTitre={`${lecon.lieuDepart.nom}${terminee ? ' · terminée' : ''}`}
-                  aDroite={<Cartouche numero={lecon.numero} />}
-                  onPress={() => router.push({ pathname: '/eleves/[id]', params: { id: lecon.eleveId } })}
-                />
-              );
-            })
-          )}
-        </Section>
-
-        {absence ? null : (
-          <Section titre="Créneaux libres" pied="Visibles par les élèves de l’auto-école, qui peuvent les réserver.">
-            {libres.length === 0 ? (
-              <Ligne titre="Aucun créneau libre" sousTitre="Ajoutez une ouverture ponctuelle dans vos disponibilités." />
-            ) : (
-              libres.map((c) => (
-                <Ligne key={c.debut} icone="horloge" titre={`${formatHeure(c.debut)} → ${formatHeure(c.fin)}`} sousTitre="Libre" />
-              ))
-            )}
-          </Section>
-        )}
+        {cal.vue === 'semaine' ? (
+          <VueSemaine
+            jours={semaine}
+            elements={elementsSemaine}
+            maintenant={maintenant}
+            absents={semaine.filter((j) => absenceLe(dispos, j))}
+            onChoisirJour={cal.ouvrirJour}
+          />
+        ) : null}
+        {cal.vue === 'mois' ? (
+          <VueMois date={jour} compte={compterParJour(siennes)} maintenant={maintenant} onChoisirJour={cal.ouvrirJour} />
+        ) : null}
+        {cal.vue === 'annee' ? (
+          <VueAnnee annee={Number(jour.slice(0, 4))} compte={compterParJour(siennes)} maintenant={maintenant} onChoisirMois={cal.ouvrirMois} />
+        ) : null}
 
         <Section>
           <Ligne

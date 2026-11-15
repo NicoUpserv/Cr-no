@@ -191,6 +191,10 @@ export const typo = {
   chiffre: { fontSize: 18, lineHeight: 22, fontFamily: policeCondensee },
   /** Mention à l'intérieur du tampon de validation. */
   tampon: { fontSize: 10, lineHeight: 12, fontWeight: '800' },
+  /** Calendrier : libellés dans les colonnes étroites de la vue semaine et de la vue mois. */
+  calendrier: { fontSize: 11, lineHeight: 13, fontWeight: '600' },
+  /** Calendrier : numéros des jours dans les mini-mois de la vue année. */
+  calendrierMini: { fontSize: 9, lineHeight: 11, fontWeight: '500' },
 } as const;
 
 export type VarianteTexte = keyof typeof typo;

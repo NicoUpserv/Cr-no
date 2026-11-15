@@ -2,6 +2,7 @@ export { BandeProgression, type EtapeProgression } from './BandeProgression';
 export { Bouton } from './Bouton';
 export { Cartouche } from './Cartouche';
 export { ChoixMenu } from './ChoixMenu';
+export { ChoixSegmente } from './ChoixSegmente';
 export { Ecran } from './Ecran';
 export { EtatVide } from './EtatVide';
 export { Icone, icones, type NomIcone } from './Icone';

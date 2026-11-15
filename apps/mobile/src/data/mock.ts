@@ -140,6 +140,60 @@ function creneau(maintenant: Date, jours: number, heures: number, duree = 60) {
 }
 
 export function construireLecons(maintenant: Date): Lecon[] {
+  const base = leconsDeBase(maintenant);
+  return [...base, ...leconsGenerees(maintenant, base)];
+}
+
+/** Élèves suivis par chaque enseignant (pour répartir les leçons générées). */
+const elevesParMoniteur: Record<string, string[]> = {
+  'm-benali': ['e-morel', 'e-haddad', 'e-petit', 'e-benhamou'],
+  'm-roux': ['e-riva', 'e-benhamou', 'e-haddad'],
+  'm-ortiz': ['e-nguyen', 'e-petit', 'e-riva'],
+};
+
+/**
+ * Leçons générées sur les 3 prochaines semaines, dans les horaires habituels de chaque enseignant,
+ * pour que les vues semaine / mois / année du planning ressemblent à une vraie auto-école.
+ * Déterministe (pas de hasard) : la démo est la même à chaque ouverture.
+ */
+function leconsGenerees(maintenant: Date, existantes: Lecon[]): Lecon[] {
+  const lieuxTournants = [lieux.agence, lieux.gare, lieux.zola, lieux.pontArc];
+  const resultat: Lecon[] = [];
+  const chevauche = (a: { debut: string; fin: string }, b: { debut: string; fin: string }) =>
+    new Date(a.debut) < new Date(b.fin) && new Date(b.debut) < new Date(a.fin);
+  for (let j = 1; j <= 21; j += 1) {
+    const jour = new Date(maintenant.getFullYear(), maintenant.getMonth(), maintenant.getDate() + j);
+    const iso = jour.getDay() === 0 ? 7 : jour.getDay();
+    disponibilites.forEach((dispo, m) => {
+      const plage = dispo.routine.find((r) => r.jour === iso);
+      const suivis = elevesParMoniteur[dispo.moniteurId] ?? [];
+      if (!plage || suivis.length === 0) return;
+      const [h0] = plage.debut.split(':').map(Number);
+      const [h1] = plage.fin.split(':').map(Number);
+      // Deux leçons par jour travaillé : en début de plage et deux heures plus tard.
+      [h0, h0 + 2].filter((h) => h + 1 <= h1).forEach((h, k) => {
+        const debut = new Date(jour.getFullYear(), jour.getMonth(), jour.getDate(), h);
+        const lecon: Lecon = {
+          id: `g-${dispo.moniteurId}-${j}-${h}`,
+          numero: 0,
+          eleveId: suivis[(j + k + m) % suivis.length],
+          moniteurId: dispo.moniteurId,
+          debut: debut.toISOString(),
+          fin: new Date(debut.getTime() + 3_600_000).toISOString(),
+          lieuDepart: lieuxTournants[(j + k) % lieuxTournants.length],
+          lieuFin: lieuxTournants[(j + k) % lieuxTournants.length],
+        };
+        const pris = [...existantes, ...resultat].some(
+          (l) => (l.moniteurId === lecon.moniteurId || l.eleveId === lecon.eleveId) && chevauche(l, lecon),
+        );
+        if (!pris) resultat.push(lecon);
+      });
+    });
+  }
+  return resultat;
+}
+
+function leconsDeBase(maintenant: Date): Lecon[] {
   return [
     // Leçon terminée plus tôt dans la journée : sa fiche reste à remplir (démo de la fiche de leçon).
     {

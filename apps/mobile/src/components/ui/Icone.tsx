@@ -13,6 +13,7 @@ type NomSymbole = ComponentProps<typeof SymbolView>['name'];
  */
 export const icones = {
   chevron: { ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' },
+  precedent: { ios: 'chevron.left', android: 'chevron_left', web: 'chevron_left' },
   itineraire: { ios: 'arrow.triangle.turn.up.right.diamond.fill', android: 'directions', web: 'directions' },
   attention: { ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' },
   document: { ios: 'doc.text', android: 'description', web: 'description' },
