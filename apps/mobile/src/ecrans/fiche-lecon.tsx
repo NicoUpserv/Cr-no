@@ -8,7 +8,7 @@ import { ScrollView, StyleSheet, Switch, TextInput, View } from 'react-native';
 
 import { DetailFiche } from '@/components/detail-fiche';
 import { Bouton, Cartouche, ChoixMenu, EtatVide, Ligne, Section, Texte } from '@/components/ui';
-import { listerSousCompetences, trouverCours, trouverEleve, trouverLecon, trouverSousCompetence } from '@/data/depot';
+import { listerSousCompetences, trouverCours, trouverEleve, trouverSousCompetence } from '@/data/depot';
 import { LONGUEUR_MAX_OBSERVATION, validerFiche, verifierBrouillon } from '@/features/fiches/fiche';
 import {
   libellesAppreciation,
@@ -19,6 +19,7 @@ import {
 } from '@/features/fiches/types';
 import { formatDateCourte, formatHeure } from '@/lib/format';
 import { useFichesEquipe } from '@/lib/fiches-lecon';
+import { usePlanning } from '@/lib/planning';
 import { useTheme } from '@/theme/use-theme';
 
 const RETIRER = 'retirer';
@@ -80,6 +81,7 @@ export function EcranFicheLecon() {
   const { leconId } = useLocalSearchParams<{ leconId: string }>();
   const { espace } = useTheme();
   const { fiches, ajouter } = useFichesEquipe();
+  const { trouverLecon } = usePlanning();
   const lecon = trouverLecon(leconId);
   const eleve = lecon ? trouverEleve(lecon.eleveId) : undefined;
   const cours = trouverCours(lecon?.cours?.coursId);

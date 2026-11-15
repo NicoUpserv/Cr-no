@@ -90,6 +90,13 @@ export type OuverturePonctuelle = Plage & {
 
 export type MotifAbsence = 'repos' | 'conges' | 'maladie' | 'autre';
 
+export const libellesMotifAbsence: Record<MotifAbsence, string> = {
+  repos: 'Repos',
+  conges: 'Congés',
+  maladie: 'Maladie',
+  autre: 'Autre',
+};
+
 /** Absence sur une période de dates incluses (« YYYY-MM-DD »). */
 export type Absence = {
   id: string;

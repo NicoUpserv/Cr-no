@@ -1,17 +1,19 @@
 import { Stack, useRouter } from 'expo-router';
 
 import { Cartouche, Ecran, EtatVide, Ligne, PanneauDirection, Section } from '@/components/ui';
-import { idMoniteurConnecte, leconsDuMoniteur, leconsTermineesDuJour, trouverEleve } from '@/data/depot';
+import { idMoniteurConnecte, trouverEleve } from '@/data/depot';
+import { leconsDuMoniteur, leconsTermineesDuJour } from '@/features/planning/lecons';
 import { formatDans, formatHeure, formatJour } from '@/lib/format';
 import { useFichesEquipe } from '@/lib/fiches-lecon';
 import { ouvrirItineraire } from '@/lib/itineraire';
+import { usePlanning } from '@/lib/planning';
 
 export default function Aujourdhui() {
   const router = useRouter();
-  const maintenant = new Date();
+  const { lecons: toutes, maintenant } = usePlanning();
   const { fiches } = useFichesEquipe();
-  const lecons = leconsDuMoniteur(idMoniteurConnecte(), maintenant).filter((l) => new Date(l.fin) > maintenant);
-  const terminees = leconsTermineesDuJour(idMoniteurConnecte(), maintenant);
+  const lecons = leconsDuMoniteur(toutes, idMoniteurConnecte()).filter((l) => new Date(l.fin) > maintenant);
+  const terminees = leconsTermineesDuJour(toutes, idMoniteurConnecte(), maintenant);
   const aRemplir = terminees.filter((l) => !fiches.some((f) => f.leconId === l.id));
   const [prochaine, ...suivantes] = lecons;
   const eleveProchaine = prochaine ? trouverEleve(prochaine.eleveId) : undefined;

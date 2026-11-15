@@ -3,10 +3,14 @@ import { Stack } from 'expo-router';
 
 import { DemandesAbsence } from '@/components/demandes-absence';
 import { Ecran, Ligne, Section } from '@/components/ui';
-import { leconsDuJour, listerMoniteurs } from '@/data/depot';
+import { listerMoniteurs } from '@/data/depot';
+import { dateLocale } from '@/features/planning/creneaux';
+import { leconsDuJour } from '@/features/planning/lecons';
+import { usePlanning } from '@/lib/planning';
 
 export default function EquipeDirection() {
-  const lecons = leconsDuJour();
+  const { lecons: toutes, maintenant } = usePlanning();
+  const lecons = leconsDuJour(toutes, dateLocale(maintenant));
   return (
     <>
       <Stack.Screen options={{ title: 'Équipe' }} />

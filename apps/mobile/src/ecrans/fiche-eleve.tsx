@@ -18,7 +18,8 @@ import {
   Texte,
 } from '@/components/ui';
 import { DetailFiche } from '@/components/detail-fiche';
-import { leconsEffectuees, prochaineLecon, trouverCours, trouverEleve, trouverMoniteur } from '@/data/depot';
+import { trouverCours, trouverEleve, trouverMoniteur } from '@/data/depot';
+import { leconsEffectuees, prochaineLecon } from '@/features/planning/lecons';
 import { libellesPermis } from '@/data/types';
 import { alerteEnseignant } from '@/features/cours/alertes';
 import { meilleurScore } from '@/features/cours/quiz';
@@ -26,6 +27,7 @@ import { dernierSignalement } from '@/features/fiches/fiche';
 import { formatDans, formatDateCourte, formatHeure, formatJour, formatPiecesManquantes } from '@/lib/format';
 import { useCoursAReproposer, useFichesDeLEleve, useProgressionEleve } from '@/lib/fiches-lecon';
 import { ouvrirItineraire } from '@/lib/itineraire';
+import { usePlanning } from '@/lib/planning';
 import { useSuiviCours } from '@/lib/suivi-cours';
 import { useTheme } from '@/theme/use-theme';
 
@@ -33,8 +35,8 @@ export function EcranFicheEleve() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { espace } = useTheme();
   const eleve = trouverEleve(id);
-  const maintenant = new Date();
-  const lecon = eleve ? prochaineLecon(eleve.id, maintenant) : undefined;
+  const { lecons: toutes, maintenant } = usePlanning();
+  const lecon = eleve ? prochaineLecon(toutes, eleve.id, maintenant) : undefined;
   const cours = trouverCours(lecon?.cours?.coursId);
   const { suivi } = useSuiviCours(eleve?.id ?? '', cours?.id);
   const fiches = useFichesDeLEleve(eleve?.id ?? '');
@@ -54,7 +56,7 @@ export function EcranFicheEleve() {
     );
   }
 
-  const effectuees = leconsEffectuees(eleve.id, maintenant);
+  const effectuees = leconsEffectuees(toutes, eleve.id, maintenant);
   const derniereFiche = fiches[0];
   const signalement = dernierSignalement(fiches);
   const auteurSignalement = signalement ? trouverMoniteur(signalement.enseignantId) : undefined;

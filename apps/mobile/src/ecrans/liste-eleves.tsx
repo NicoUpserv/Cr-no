@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { Switch } from 'react-native';
 
 import { Ecran, EtatVide, Ligne, Section } from '@/components/ui';
-import { leconsEffectuees, listerEleves } from '@/data/depot';
+import { listerEleves } from '@/data/depot';
+import { leconsEffectuees } from '@/features/planning/lecons';
+import { usePlanning } from '@/lib/planning';
 import { libellesPermis } from '@/data/types';
 import { filtrerEleves, type FiltreEleves } from '@/features/eleves/filtrer';
 import { formatPiecesManquantes } from '@/lib/format';
@@ -14,6 +16,7 @@ export type CheminFiche = '/eleves/[id]' | '/direction/eleves/[id]';
 /** Liste des élèves (partagée par l'enseignant et la direction). Première version : DeepSeek, tâche 01. */
 export function EcranListeEleves({ cheminFiche }: { cheminFiche: CheminFiche }) {
   const router = useRouter();
+  const { lecons, maintenant } = usePlanning();
   const { couleurs } = useTheme();
   const [recherche, setRecherche] = useState('');
   const [seulementDossierIncomplet, setSeulementDossierIncomplet] = useState(false);
@@ -57,7 +60,7 @@ export function EcranListeEleves({ cheminFiche }: { cheminFiche: CheminFiche }) 
               const sousTitre = `${libellesPermis[eleve.permis]} · ${
                 manquantes > 0
                   ? formatPiecesManquantes(manquantes)
-                  : `Leçon ${leconsEffectuees(eleve.id)} sur ${eleve.forfaitLecons}`
+                  : `Leçon ${leconsEffectuees(lecons, eleve.id, maintenant)} sur ${eleve.forfaitLecons}`
               }`;
 
               return (

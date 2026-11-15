@@ -13,7 +13,6 @@ import {
   idEleveConnecte,
   infosAutoEcole,
   meteoPourLecon,
-  prochaineLecon,
   trouverCours,
   trouverEleve,
   trouverMoniteur,
@@ -23,13 +22,15 @@ import { alerteEleve } from '@/features/cours/alertes';
 import { formatDans, formatDateCourte, formatHeure, formatJour, formatPiecesManquantes } from '@/lib/format';
 import { useCoursAReproposer, useFichesVueEleve, useProgressionEleve } from '@/lib/fiches-lecon';
 import { ouvrirItineraire } from '@/lib/itineraire';
+import { usePlanning } from '@/lib/planning';
+import { prochaineLecon } from '@/features/planning/lecons';
 import { useSuiviCours } from '@/lib/suivi-cours';
 
 export default function AccueilEleve() {
   const router = useRouter();
-  const maintenant = new Date();
+  const { lecons: toutes, maintenant } = usePlanning();
   const eleve = trouverEleve(idEleveConnecte());
-  const lecon = eleve ? prochaineLecon(eleve.id, maintenant) : undefined;
+  const lecon = eleve ? prochaineLecon(toutes, eleve.id, maintenant) : undefined;
   const cours = trouverCours(lecon?.cours?.coursId);
   const { suivi } = useSuiviCours(eleve?.id ?? '', cours?.id);
   // Vue élève : l'observation interne et les signalements ne sont jamais affichés.

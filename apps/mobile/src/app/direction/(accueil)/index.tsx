@@ -9,7 +9,6 @@ import {
   documentsAValider,
   elevesPretsPourLExamen,
   infosAutoEcole,
-  leconsDuJour,
   listerMoniteurs,
   trouverEleve,
   trouverMoniteur,
@@ -17,11 +16,14 @@ import {
 import type { DocumentRecu } from '@/data/types';
 import { dernierSignalement } from '@/features/fiches/fiche';
 import { formatDateCourte, formatHeure, formatIlYA } from '@/lib/format';
+import { dateLocale } from '@/features/planning/creneaux';
+import { leconsDuJour } from '@/features/planning/lecons';
 import { useFichesEquipe } from '@/lib/fiches-lecon';
+import { usePlanning } from '@/lib/planning';
 
 export default function AccueilDirection() {
   const router = useRouter();
-  const maintenant = new Date();
+  const { lecons: toutes, maintenant } = usePlanning();
   const { fiches } = useFichesEquipe();
   // Le signalement le plus récent de chaque élève.
   const signalements = [...new Set(fiches.map((f) => f.eleveId))].flatMap((eleveId) => {
@@ -30,7 +32,7 @@ export default function AccueilDirection() {
   });
   const [documents, setDocuments] = useState<DocumentRecu[]>(documentsAValider);
   const prets = elevesPretsPourLExamen();
-  const lecons = leconsDuJour(maintenant);
+  const lecons = leconsDuJour(toutes, dateLocale(maintenant));
 
   const verifierDocument = (doc: DocumentRecu, nomEleve: string) => {
     const retirer = () => setDocuments((liste) => liste.filter((d) => d.id !== doc.id));

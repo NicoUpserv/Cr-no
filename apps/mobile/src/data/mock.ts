@@ -126,6 +126,9 @@ const lieux: Record<string, Lieu> = {
   pontArc: { nom: 'Pont de l’Arc', adresse: 'Avenue de Toulon, 13090 Aix-en-Provence' },
 };
 
+/** Lieux de rendez-vous proposés aux élèves (l'agence en premier). */
+export const lieuxAutoEcole: Lieu[] = [lieux.agence, lieux.gare, lieux.zola, lieux.pontArc];
+
 /** Arrondit à l'heure suivante puis décale de `heures` heures et `jours` jours. */
 function creneau(maintenant: Date, jours: number, heures: number, duree = 60) {
   const debut = new Date(maintenant);
@@ -267,6 +270,29 @@ export const disponibilites: DisponibilitesMoniteur[] = [
     ],
     ouvertures: [{ id: 'ouv-1', date: '2026-11-21', debut: '09:00', fin: '12:00' }],
     absences: [{ id: 'abs-1', du: '2026-12-22', au: '2026-12-31', motif: 'conges' }],
+  },
+  {
+    moniteurId: 'm-roux',
+    routine: [
+      { jour: 1, debut: '09:00', fin: '12:00' },
+      { jour: 2, debut: '13:00', fin: '19:00' },
+      { jour: 3, debut: '13:00', fin: '19:00' },
+      { jour: 5, debut: '09:00', fin: '12:00' },
+      { jour: 6, debut: '08:00', fin: '12:00' },
+    ],
+    ouvertures: [],
+    absences: [],
+  },
+  {
+    moniteurId: 'm-ortiz',
+    routine: [
+      { jour: 2, debut: '08:00', fin: '12:00' },
+      { jour: 3, debut: '08:00', fin: '12:00' },
+      { jour: 4, debut: '14:00', fin: '19:00' },
+      { jour: 6, debut: '09:00', fin: '13:00' },
+    ],
+    ouvertures: [],
+    absences: [],
   },
 ];
 

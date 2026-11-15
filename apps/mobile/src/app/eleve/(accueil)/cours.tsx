@@ -10,7 +10,8 @@ import { useMemo, useRef, useState, type ComponentRef } from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions, View, type NativeScrollEvent } from 'react-native';
 
 import { Bouton, EtatVide, Icone, Ligne, NoteAttention, Section, Texte } from '@/components/ui';
-import { idEleveConnecte, prochaineLecon, trouverCours } from '@/data/depot';
+import { idEleveConnecte, trouverCours } from '@/data/depot';
+import { prochaineLecon } from '@/features/planning/lecons';
 import { corrigerQuiz, tirerQuiz } from '@/features/cours/quiz';
 import type { Cours, QuestionTiree, ResultatQuiz } from '@/features/cours/types';
 import {
@@ -23,6 +24,7 @@ import {
   type Visionnage,
 } from '@/features/cours/visionnage';
 import { formatHeure } from '@/lib/format';
+import { usePlanning } from '@/lib/planning';
 import { useProtectionContenu } from '@/lib/protection-video';
 import { useProgressionCours, useSuiviCours } from '@/lib/suivi-cours';
 import { useTheme } from '@/theme/use-theme';
@@ -273,7 +275,8 @@ export default function LecteurCours() {
   // `coursId` : cours reproposé après « non maîtrisé ». Sinon, le cours de la prochaine leçon.
   const { coursId } = useLocalSearchParams<{ coursId?: string }>();
   const eleveId = idEleveConnecte();
-  const prochaine = prochaineLecon(eleveId);
+  const { lecons: toutes, maintenant } = usePlanning();
+  const prochaine = prochaineLecon(toutes, eleveId, maintenant);
   const lecon = !coursId || prochaine?.cours?.coursId === coursId ? prochaine : undefined;
   const cours = trouverCours(coursId ?? lecon?.cours?.coursId);
   const { suivi, enregistrer } = useSuiviCours(eleveId, cours?.id);

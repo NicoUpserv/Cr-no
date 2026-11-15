@@ -20,6 +20,7 @@ import {
   moniteurConnecteId,
   moniteurs,
   fichesDemo,
+  lieuxAutoEcole,
   preferences,
 } from './mock';
 import type {
@@ -30,6 +31,7 @@ import type {
   Eleve,
   ExamenBlanc,
   Lecon,
+  Lieu,
   Meteo,
   Moniteur,
   PreferencesEleve,
@@ -51,38 +53,17 @@ export function idMoniteurConnecte(): string {
   return moniteurConnecteId;
 }
 
-export function leconsDeLEleve(eleveId: string, maintenant = new Date()): Lecon[] {
-  return construireLecons(maintenant)
-    .filter((l) => l.eleveId === eleveId)
-    .sort((a, b) => a.debut.localeCompare(b.debut));
+/**
+ * Leçons enregistrées au démarrage de la démo. Les écrans ne l'appellent pas directement :
+ * ils passent par `lib/planning` (`usePlanning`), qui y ajoute les réservations et retire les annulations.
+ */
+export function leconsEnregistrees(maintenant = new Date()): Lecon[] {
+  return construireLecons(maintenant);
 }
 
-/** Prochaine leçon non terminée de l'élève, ou undefined. */
-export function prochaineLecon(eleveId: string, maintenant = new Date()): Lecon | undefined {
-  return leconsDeLEleve(eleveId, maintenant).find((l) => new Date(l.fin) > maintenant);
-}
-
-/** Nombre de leçons déjà effectuées (numéro de la prochaine leçon − 1 si elle existe). */
-export function leconsEffectuees(eleveId: string, maintenant = new Date()): number {
-  const prochaine = prochaineLecon(eleveId, maintenant);
-  return prochaine ? prochaine.numero - 1 : 0;
-}
-
-export function leconsDuMoniteur(moniteurId: string, maintenant = new Date()): Lecon[] {
-  return construireLecons(maintenant)
-    .filter((l) => l.moniteurId === moniteurId)
-    .sort((a, b) => a.debut.localeCompare(b.debut));
-}
-
-export function trouverLecon(id: string, maintenant = new Date()): Lecon | undefined {
-  return construireLecons(maintenant).find((l) => l.id === id);
-}
-
-/** Leçons de l'enseignant terminées aujourd'hui (leur fiche est à remplir si elle n'existe pas). */
-export function leconsTermineesDuJour(moniteurId: string, maintenant = new Date()): Lecon[] {
-  return leconsDuMoniteur(moniteurId, maintenant).filter(
-    (l) => new Date(l.fin) <= maintenant && new Date(l.debut).toDateString() === maintenant.toDateString(),
-  );
+/** Lieux de rendez-vous proposés par l'auto-école. */
+export function lieuxDeRendezVous(): Lieu[] {
+  return lieuxAutoEcole;
 }
 
 /* ----- Fiches de leçon et livret ----- */
@@ -105,10 +86,9 @@ export function idDirectionConnectee(): string {
   return 'd-direction';
 }
 
-export function disponibilitesDuMoniteur(moniteurId: string): DisponibilitesMoniteur {
-  return (
-    disponibilites.find((d) => d.moniteurId === moniteurId) ?? { moniteurId, routine: [], ouvertures: [], absences: [] }
-  );
+/** Disponibilités au démarrage de la démo (ensuite modifiables via `lib/planning`). */
+export function disponibilitesInitiales(): DisponibilitesMoniteur[] {
+  return disponibilites;
 }
 
 export function listerPreferences(): PreferencesEleve[] {
@@ -132,14 +112,6 @@ export function meteoPourLecon(_lecon: Lecon): Meteo {
 
 export function listerMoniteurs(): Moniteur[] {
   return moniteurs;
-}
-
-/** Toutes les leçons du jour, tous enseignants confondus. */
-export function leconsDuJour(maintenant = new Date()): Lecon[] {
-  const memeJour = (iso: string) => new Date(iso).toDateString() === maintenant.toDateString();
-  return construireLecons(maintenant)
-    .filter((l) => memeJour(l.debut))
-    .sort((a, b) => a.debut.localeCompare(b.debut));
 }
 
 export function demandesAbsenceEnAttente(): DemandeAbsence[] {
