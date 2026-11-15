@@ -3,19 +3,34 @@
  * 1. vidéos → 2. fiches → 3. quiz → 4. bilan (résultat du quiz) → 5. ce que dit la loi.
  * Contenus protégés : pas de téléchargement, pas d'image dans l'image, captures bloquées.
  */
+import { useEventListener } from 'expo';
 import { Stack, useRouter } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useMemo, useRef, useState, type ComponentRef } from 'react';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { ScrollView, StyleSheet, useWindowDimensions, View, type NativeScrollEvent } from 'react-native';
 
 import { Bouton, EtatVide, Icone, Ligne, NoteAttention, Section, Texte } from '@/components/ui';
 import { idEleveConnecte, prochaineLecon, trouverCours } from '@/data/depot';
 import { corrigerQuiz, tirerQuiz } from '@/features/cours/quiz';
 import type { Cours, QuestionTiree, ResultatQuiz } from '@/features/cours/types';
+import {
+  avancerVisionnage,
+  pourcentageVu,
+  positionAutorisee,
+  resteAvantQuiz,
+  visionnageVide,
+  type ProgressionCours,
+  type Visionnage,
+} from '@/features/cours/visionnage';
 import { formatHeure } from '@/lib/format';
 import { useProtectionContenu } from '@/lib/protection-video';
-import { useSuiviCours } from '@/lib/suivi-cours';
+import { useProgressionCours, useSuiviCours } from '@/lib/suivi-cours';
 import { useTheme } from '@/theme/use-theme';
+
+/** Marge sous laquelle on considère que l'élève a atteint le bas des fiches (en points). */
+const MARGE_BAS_FICHES = 48;
+const estEnBas = ({ layoutMeasurement, contentOffset, contentSize }: NativeScrollEvent) =>
+  layoutMeasurement.height + contentOffset.y >= contentSize.height - MARGE_BAS_FICHES;
 
 type Etape = 'videos' | 'fiches' | 'quiz' | 'bilan' | 'loi';
 const ETAPES: { cle: Etape; libelle: string }[] = [
@@ -28,11 +43,34 @@ const ETAPES: { cle: Etape; libelle: string }[] = [
 
 /* ---------- 1. Vidéos ---------- */
 
-function Lecteur({ source }: { source: number | string }) {
+function Lecteur({
+  source,
+  dureePrevue,
+  visionnage,
+  onAvance,
+}: {
+  source: number | string;
+  dureePrevue: number;
+  visionnage: Visionnage;
+  onAvance: (precedente: number, actuelle: number, duree: number) => void;
+}) {
   const { couleurs, rayon } = useTheme();
   const { width } = useWindowDimensions();
   const player = useVideoPlayer(source, (p) => {
     p.loop = false;
+    p.timeUpdateEventInterval = 0.5;
+  });
+  const derniere = useRef(0);
+  // Mesure du temps réellement regardé ; au premier visionnage, l'avance rapide ramène au point atteint.
+  useEventListener(player, 'timeUpdate', ({ currentTime }) => {
+    const retour = positionAutorisee(visionnage, currentTime);
+    if (retour !== null) {
+      player.seekBy(retour - currentTime);
+      derniere.current = retour;
+      return;
+    }
+    onAvance(derniere.current, currentTime, player.duration > 0 ? player.duration : dureePrevue);
+    derniere.current = currentTime;
   });
   // Format vertical 9:16, à une taille qui laisse voir toute la vidéo et ses commandes.
   const largeur = Math.min(width - 32, 300);
@@ -54,25 +92,59 @@ function Lecteur({ source }: { source: number | string }) {
   );
 }
 
-function EtapeVideos({ cours }: { cours: Cours }) {
-  const [index, setIndex] = useState(0);
+function EtapeVideos({
+  cours,
+  progression,
+  majProgression,
+}: {
+  cours: Cours;
+  progression: ProgressionCours;
+  majProgression: (fn: (p: ProgressionCours) => ProgressionCours) => void;
+}) {
+  // Ouvre directement la première vidéo pas encore vue.
+  const [index, setIndex] = useState(() => Math.max(0, progression.videos.findIndex((v) => !v.terminee)));
   const video = cours.videos[index];
+  const visionnage = progression.videos[index] ?? visionnageVide;
+  const avancer = (precedente: number, actuelle: number, duree: number) =>
+    majProgression((p) => ({
+      ...p,
+      videos: cours.videos.map((_, i) =>
+        i === index ? avancerVisionnage(p.videos[i] ?? visionnageVide, precedente, actuelle, duree) : (p.videos[i] ?? visionnageVide),
+      ),
+    }));
   return (
     <>
-      <Section titre={`Vidéo ${index + 1} sur ${cours.videos.length} · ${video.titre}`} forme="libre">
-        <Lecteur key={index} source={video.source} />
+      <Section
+        titre={`Vidéo ${index + 1} sur ${cours.videos.length} · ${video.titre}`}
+        pied={
+          visionnage.terminee
+            ? 'Vidéo vue en entier. Tu peux avancer ou revenir en arrière librement.'
+            : 'À regarder en entier pour débloquer le quiz. L’avance rapide est bloquée la première fois.'
+        }
+        forme="libre">
+        <Lecteur
+          key={index}
+          source={video.source}
+          dureePrevue={video.dureeSecondes}
+          visionnage={visionnage}
+          onAvance={avancer}
+        />
       </Section>
       {cours.videos.length > 1 ? (
         <Section titre="Toutes les vidéos">
-          {cours.videos.map((v, i) => (
-            <Ligne
-              key={v.titre}
-              icone={i === index ? 'cours' : 'chevron'}
-              titre={`${i + 1}. ${v.titre}`}
-              sousTitre={i === index ? 'En cours de lecture' : `${Math.round(v.dureeSecondes)} s`}
-              onPress={i === index ? undefined : () => setIndex(i)}
-            />
-          ))}
+          {cours.videos.map((v, i) => {
+            const vue = progression.videos[i] ?? visionnageVide;
+            const etat = vue.terminee ? 'Vue en entier' : `Vue à ${pourcentageVu(vue, v.dureeSecondes)} %`;
+            return (
+              <Ligne
+                key={v.titre}
+                icone={vue.terminee ? 'valider' : 'cours'}
+                titre={`${i + 1}. ${v.titre}`}
+                sousTitre={i === index ? `En cours de lecture · ${etat}` : etat}
+                onPress={i === index ? undefined : () => setIndex(i)}
+              />
+            );
+          })}
         </Section>
       ) : null}
     </>
@@ -202,6 +274,8 @@ export default function LecteurCours() {
   const lecon = prochaineLecon(eleveId);
   const cours = trouverCours(lecon?.cours?.coursId);
   const { suivi, enregistrer } = useSuiviCours(eleveId, cours?.id);
+  const { progression, majProgression } = useProgressionCours(eleveId, cours);
+  const hauteurVue = useRef(0);
 
   const [etape, setEtape] = useState<Etape>('videos');
   const [tirage, setTirage] = useState(0);
@@ -210,7 +284,7 @@ export default function LecteurCours() {
   // Un nouveau tirage à chaque passage (le compteur `tirage` force le recalcul).
   const questions = useMemo(() => (cours ? tirerQuiz(cours, dejaVues) : []), [cours, tirage]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!cours) {
+  if (!cours || !progression) {
     return (
       <>
         <Stack.Screen options={{ title: 'Cours', headerLargeTitle: false }} />
@@ -235,6 +309,11 @@ export default function LecteurCours() {
     setResultat(null);
     aller('quiz');
   };
+  const reste = resteAvantQuiz(cours, progression);
+  const quizOuvert = reste.length === 0;
+  const marquerFichesLues = () => {
+    if (etape === 'fiches' && !progression.fichesLues) majProgression((p) => ({ ...p, fichesLues: true }));
+  };
 
   return (
     <>
@@ -242,6 +321,17 @@ export default function LecteurCours() {
       <ScrollView
         ref={defilement}
         contentInsetAdjustmentBehavior="automatic"
+        scrollEventThrottle={200}
+        onLayout={(e) => {
+          hauteurVue.current = e.nativeEvent.layout.height;
+        }}
+        // Fiches courtes qui tiennent dans l'écran : elles sont lues sans défilement.
+        onContentSizeChange={(_, hauteur) => {
+          if (hauteurVue.current > 0 && hauteur <= hauteurVue.current + MARGE_BAS_FICHES) marquerFichesLues();
+        }}
+        onScroll={(e) => {
+          if (estEnBas(e.nativeEvent)) marquerFichesLues();
+        }}
         contentContainerStyle={{ paddingBottom: espace.xxxl, gap: espace.xs }}>
         <Section
           pied={
@@ -253,7 +343,9 @@ export default function LecteurCours() {
           {null}
         </Section>
 
-        {etape === 'videos' ? <EtapeVideos cours={cours} /> : null}
+        {etape === 'videos' ? (
+          <EtapeVideos cours={cours} progression={progression} majProgression={majProgression} />
+        ) : null}
         {etape === 'fiches' ? <EtapeFiches cours={cours} /> : null}
         {etape === 'quiz' ? <EtapeQuiz key={tirage} questions={questions} onTermine={terminerQuiz} /> : null}
         {etape === 'bilan' && resultat ? <EtapeBilan cours={cours} resultat={resultat} /> : null}
@@ -265,7 +357,23 @@ export default function LecteurCours() {
 
         <View style={{ paddingTop: espace.xl, gap: espace.s }}>
           {etape === 'videos' ? <Bouton titre="Continuer : les fiches" onPress={() => aller('fiches')} /> : null}
-          {etape === 'fiches' ? <Bouton titre="Je suis prêt : le quiz" onPress={() => aller('quiz')} /> : null}
+          {etape === 'fiches' ? (
+            <>
+              {quizOuvert ? null : (
+                <Section pied={`Quiz verrouillé. Il te reste à ${reste.join(' et à ')}.`} forme="libre">
+                  {null}
+                </Section>
+              )}
+              <Bouton
+                titre={quizOuvert ? 'Je suis prêt : le quiz' : 'Quiz verrouillé'}
+                desactive={!quizOuvert}
+                onPress={() => aller('quiz')}
+              />
+              {progression.videos.some((v) => !v.terminee) ? (
+                <Bouton titre="Revenir aux vidéos" variante="secondaire" onPress={() => aller('videos')} />
+              ) : null}
+            </>
+          ) : null}
           {etape === 'bilan' && resultat?.valide ? (
             <Bouton titre="Continuer : ce que dit la loi" onPress={() => aller('loi')} />
           ) : null}

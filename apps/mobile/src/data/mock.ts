@@ -14,9 +14,9 @@ import type {
   Lieu,
   Meteo,
   Moniteur,
-  Observation,
   PreferencesEleve,
 } from './types';
+import type { FicheLecon } from '@/features/fiches/types';
 
 export const autoEcole: AutoEcole = {
   nom: 'Auto-école du Cours',
@@ -41,10 +41,10 @@ export const moniteurConnecteId = 'm-benali';
 
 const competencesB = (acquises: [number, number, number, number]) =>
   [
-    { code: 'C1', libelle: 'Maîtriser le maniement du véhicule', sousCompetencesTotal: 6, sousCompetencesAcquises: acquises[0] },
+    { code: 'C1', libelle: 'Maîtriser le maniement du véhicule', sousCompetencesTotal: 9, sousCompetencesAcquises: acquises[0] },
     { code: 'C2', libelle: 'Appréhender la route', sousCompetencesTotal: 7, sousCompetencesAcquises: acquises[1] },
-    { code: 'C3', libelle: 'Circuler dans des conditions difficiles', sousCompetencesTotal: 7, sousCompetencesAcquises: acquises[2] },
-    { code: 'C4', libelle: 'Pratiquer une conduite autonome et sûre', sousCompetencesTotal: 6, sousCompetencesAcquises: acquises[3] },
+    { code: 'C3', libelle: 'Circuler dans des conditions difficiles', sousCompetencesTotal: 9, sousCompetencesAcquises: acquises[2] },
+    { code: 'C4', libelle: 'Pratiquer une conduite autonome et sûre', sousCompetencesTotal: 7, sousCompetencesAcquises: acquises[3] },
   ] as Eleve['competences'];
 
 export const eleves: Eleve[] = [
@@ -55,7 +55,7 @@ export const eleves: Eleve[] = [
     telephone: '06 12 34 56 78',
     permis: 'B',
     forfaitLecons: 20,
-    competences: competencesB([6, 7, 3, 0]),
+    competences: competencesB([6, 5, 3, 0]),
     piecesManquantes: ['Justificatif de domicile', 'Attestation ASSR 2'],
     moniteursFavorisIds: ['m-benali'],
   },
@@ -135,6 +135,17 @@ function creneau(maintenant: Date, jours: number, heures: number, duree = 60) {
 
 export function construireLecons(maintenant: Date): Lecon[] {
   return [
+    // Leçon terminée plus tôt dans la journée : sa fiche reste à remplir (démo de la fiche de leçon).
+    {
+      id: 'l-petit-8',
+      numero: 8,
+      eleveId: 'e-petit',
+      moniteurId: 'm-benali',
+      ...creneau(maintenant, 0, -3),
+      lieuDepart: lieux.agence,
+      lieuFin: lieux.agence,
+      cours: { coursId: 'cours-insertion-voie-rapide', envoyeLe: creneau(maintenant, -3, 0).debut },
+    },
     {
       id: 'l-morel-14',
       numero: 14,
@@ -202,22 +213,41 @@ export function construireLecons(maintenant: Date): Lecon[] {
   ];
 }
 
-export const observations: Observation[] = [
+/** Fiches de leçon déjà validées (docs/fiche-de-lecon.md). */
+export const fichesDemo: FicheLecon[] = [
   {
-    id: 'o-1',
+    leconId: 'l-morel-13',
+    numeroLecon: 13,
     eleveId: 'e-morel',
-    auteurId: 'm-benali',
-    date: '2026-11-08T15:10:00.000Z',
-    texte: 'Bonne gestion des giratoires. Anticiper davantage les priorités à droite en ville.',
-    visibleParEleve: true,
+    enseignantId: 'm-benali',
+    date: '2026-11-08T14:00:00.000Z',
+    sousCompetences: [
+      { sousCompetenceId: 'c2-f', competence: 'C2', appreciation: 'acquis' },
+      { sousCompetenceId: 'c2-d', competence: 'C2', appreciation: 'non-maitrise' },
+      { sousCompetenceId: 'c3-e', competence: 'C3', appreciation: 'vu' },
+    ],
+    observationPartagee: 'Bonne gestion des giratoires. Anticipe davantage les priorités à droite en ville.',
+    observationInterne: 'Un peu stressée à l’approche des voies rapides : prévoir un parcours progressif.',
+    aSignaler: false,
+    valideeLe: '2026-11-08T15:10:00.000Z',
+    corrections: [],
   },
   {
-    id: 'o-2',
-    eleveId: 'e-morel',
-    auteurId: 'm-benali',
-    date: '2026-11-08T15:12:00.000Z',
-    texte: 'Un peu stressée à l’approche des voies rapides : prévoir un parcours progressif.',
-    visibleParEleve: false,
+    leconId: 'l-haddad-17',
+    numeroLecon: 17,
+    eleveId: 'e-haddad',
+    enseignantId: 'm-roux',
+    date: '2026-11-12T09:00:00.000Z',
+    sousCompetences: [
+      { sousCompetenceId: 'c2-e', competence: 'C2', appreciation: 'acquis' },
+      { sousCompetenceId: 'c3-a', competence: 'C3', appreciation: 'non-maitrise' },
+    ],
+    observationPartagee: 'Bonne leçon en ville. Les distances de sécurité sur voie rapide restent à travailler.',
+    observationInterne:
+      'A freiné tardivement à deux reprises à l’approche d’un passage piéton (avenue de Toulon). Intervention à la double commande la seconde fois.',
+    aSignaler: true,
+    valideeLe: '2026-11-12T10:05:00.000Z',
+    corrections: [],
   },
 ];
 

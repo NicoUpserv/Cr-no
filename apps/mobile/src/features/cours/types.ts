@@ -24,6 +24,8 @@ export type Cours = {
   id: string;
   titre: string;
   competence: 'C1' | 'C2' | 'C3' | 'C4';
+  /** Sous-compétences du livret travaillées par ce cours : préremplies dans la fiche de leçon. */
+  sousCompetencesIds?: string[];
   videos: VideoCours[];
   fiches: FicheTechnique[];
   banqueQuestions: QuestionQuiz[];

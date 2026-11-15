@@ -15,11 +15,19 @@ import {
   trouverMoniteur,
 } from '@/data/depot';
 import type { DocumentRecu } from '@/data/types';
+import { dernierSignalement } from '@/features/fiches/fiche';
 import { formatDateCourte, formatHeure, formatIlYA } from '@/lib/format';
+import { useFichesEquipe } from '@/lib/fiches-lecon';
 
 export default function AccueilDirection() {
   const router = useRouter();
   const maintenant = new Date();
+  const { fiches } = useFichesEquipe();
+  // Le signalement le plus récent de chaque élève.
+  const signalements = [...new Set(fiches.map((f) => f.eleveId))].flatMap((eleveId) => {
+    const s = dernierSignalement(fiches.filter((f) => f.eleveId === eleveId));
+    return s ? [s] : [];
+  });
   const [documents, setDocuments] = useState<DocumentRecu[]>(documentsAValider);
   const prets = elevesPretsPourLExamen();
   const lecons = leconsDuJour(maintenant);
@@ -37,6 +45,24 @@ export default function AccueilDirection() {
     <>
       <Stack.Screen options={{ title: infosAutoEcole().nom }} />
       <Ecran>
+        {signalements.length > 0 ? (
+          <Section titre="Signalements de l’équipe" pied="Observations internes marquées « À signaler » par un enseignant.">
+            {signalements.map((s) => {
+              const eleve = trouverEleve(s.eleveId);
+              const auteur = trouverMoniteur(s.enseignantId);
+              return (
+                <Ligne
+                  key={s.leconId}
+                  icone="attention"
+                  titre={`${eleve ? `${eleve.prenom} ${eleve.nom}` : 'Élève'} · L${s.numeroLecon}`}
+                  sousTitre={`${s.observationInterne} (${auteur ? `${auteur.prenom} ${auteur.nom}, ` : ''}${formatDateCourte(s.date)})`}
+                  onPress={() => router.push({ pathname: '/direction/eleves/[id]', params: { id: s.eleveId } })}
+                />
+              );
+            })}
+          </Section>
+        ) : null}
+
         <DemandesAbsence titre="À décider : absences" />
 
         <Section titre="À vérifier : documents reçus">

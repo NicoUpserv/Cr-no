@@ -3,8 +3,10 @@
  * Plus tard : Supabase. Les écrans n'importent QUE ce fichier, jamais `mock.ts`.
  */
 import type { Cours } from '@/features/cours/types';
+import type { FicheLecon, SousCompetence } from '@/features/fiches/types';
 
 import { coursInsertionDemo } from './cours-demo';
+import { sousCompetencesB } from './remc';
 import {
   autoEcole,
   construireLecons,
@@ -17,7 +19,7 @@ import {
   meteoDemo,
   moniteurConnecteId,
   moniteurs,
-  observations,
+  fichesDemo,
   preferences,
 } from './mock';
 import type {
@@ -30,7 +32,6 @@ import type {
   Lecon,
   Meteo,
   Moniteur,
-  Observation,
   PreferencesEleve,
 } from './types';
 
@@ -73,8 +74,35 @@ export function leconsDuMoniteur(moniteurId: string, maintenant = new Date()): L
     .sort((a, b) => a.debut.localeCompare(b.debut));
 }
 
-export function observationsDeLEleve(eleveId: string): Observation[] {
-  return observations.filter((o) => o.eleveId === eleveId).sort((a, b) => b.date.localeCompare(a.date));
+export function trouverLecon(id: string, maintenant = new Date()): Lecon | undefined {
+  return construireLecons(maintenant).find((l) => l.id === id);
+}
+
+/** Leçons de l'enseignant terminées aujourd'hui (leur fiche est à remplir si elle n'existe pas). */
+export function leconsTermineesDuJour(moniteurId: string, maintenant = new Date()): Lecon[] {
+  return leconsDuMoniteur(moniteurId, maintenant).filter(
+    (l) => new Date(l.fin) <= maintenant && new Date(l.debut).toDateString() === maintenant.toDateString(),
+  );
+}
+
+/* ----- Fiches de leçon et livret ----- */
+
+/** Fiches déjà validées au démarrage de la démo (ensuite gérées par `lib/fiches-lecon`). */
+export function fichesInitiales(): FicheLecon[] {
+  return fichesDemo;
+}
+
+export function listerSousCompetences(): SousCompetence[] {
+  return sousCompetencesB;
+}
+
+export function trouverSousCompetence(id: string): SousCompetence | undefined {
+  return sousCompetencesB.find((s) => s.id === id);
+}
+
+/** Personne de la direction connectée (démo). */
+export function idDirectionConnectee(): string {
+  return 'd-direction';
 }
 
 export function disponibilitesDuMoniteur(moniteurId: string): DisponibilitesMoniteur {

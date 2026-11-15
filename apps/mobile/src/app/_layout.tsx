@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
+import { FournisseurFichesLecon } from '@/lib/fiches-lecon';
 import { FournisseurProfil } from '@/lib/profil';
 import { FournisseurSuiviCours } from '@/lib/suivi-cours';
 import { useTheme } from '@/theme/use-theme';
@@ -36,10 +37,12 @@ export default function RacineLayout() {
   return (
     <FournisseurProfil>
       <FournisseurSuiviCours>
-        <ThemeProvider value={themeNavigation}>
-          <StatusBar style="auto" />
-          <Stack screenOptions={{ headerShown: false, animation: 'fade' }} />
-        </ThemeProvider>
+        <FournisseurFichesLecon>
+          <ThemeProvider value={themeNavigation}>
+            <StatusBar style="auto" />
+            <Stack screenOptions={{ headerShown: false, animation: 'fade' }} />
+          </ThemeProvider>
+        </FournisseurFichesLecon>
       </FournisseurSuiviCours>
     </FournisseurProfil>
   );

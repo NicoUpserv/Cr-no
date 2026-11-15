@@ -17,11 +17,14 @@ import {
   Section,
   Texte,
 } from '@/components/ui';
-import { leconsEffectuees, observationsDeLEleve, prochaineLecon, trouverCours, trouverEleve } from '@/data/depot';
+import { DetailFiche } from '@/components/detail-fiche';
+import { leconsEffectuees, prochaineLecon, trouverCours, trouverEleve, trouverMoniteur } from '@/data/depot';
 import { libellesPermis } from '@/data/types';
 import { alerteEnseignant } from '@/features/cours/alertes';
 import { meilleurScore } from '@/features/cours/quiz';
+import { dernierSignalement } from '@/features/fiches/fiche';
 import { formatDans, formatDateCourte, formatHeure, formatJour, formatPiecesManquantes } from '@/lib/format';
+import { useFichesDeLEleve } from '@/lib/fiches-lecon';
 import { ouvrirItineraire } from '@/lib/itineraire';
 import { useSuiviCours } from '@/lib/suivi-cours';
 import { useTheme } from '@/theme/use-theme';
@@ -34,6 +37,7 @@ export function EcranFicheEleve() {
   const lecon = eleve ? prochaineLecon(eleve.id, maintenant) : undefined;
   const cours = trouverCours(lecon?.cours?.coursId);
   const { suivi } = useSuiviCours(eleve?.id ?? '', cours?.id);
+  const fiches = useFichesDeLEleve(eleve?.id ?? '');
 
   if (!eleve) {
     return (
@@ -49,8 +53,9 @@ export function EcranFicheEleve() {
   }
 
   const effectuees = leconsEffectuees(eleve.id, maintenant);
-  const observations = observationsDeLEleve(eleve.id);
-  const derniere = observations[0];
+  const derniereFiche = fiches[0];
+  const signalement = dernierSignalement(fiches);
+  const auteurSignalement = signalement ? trouverMoniteur(signalement.enseignantId) : undefined;
   const alerteCours = cours && suivi && lecon?.cours ? alerteEnseignant(cours, suivi, lecon.cours.envoyeLe) : null;
   const meilleur = suivi ? meilleurScore(suivi) : null;
 
@@ -67,6 +72,15 @@ export function EcranFicheEleve() {
             {lecon ? `sur ${eleve.forfaitLecons}` : `${effectuees} leçons sur ${eleve.forfaitLecons}`}
           </Texte>
         </View>
+
+        {signalement ? (
+          <Section titre="Signalement de l’équipe" forme="libre">
+            <NoteAttention
+              titre={`Signalé le ${formatDateCourte(signalement.date)}${auteurSignalement ? ` par ${auteurSignalement.prenom} ${auteurSignalement.nom}` : ''} · L${signalement.numeroLecon}`}
+              preuve={signalement.observationInterne}
+            />
+          </Section>
+        ) : null}
 
         {lecon ? (
           <Section titre="Prochaine leçon" forme="libre">
@@ -103,22 +117,20 @@ export function EcranFicheEleve() {
           />
         </Section>
 
+        {derniereFiche ? (
+          <DetailFiche vue="equipe" fiche={derniereFiche} titre={`Dernière leçon · L${derniereFiche.numeroLecon} · ${formatDateCourte(derniereFiche.date)}`} />
+        ) : (
+          <Section titre="Dernière leçon">
+            <Ligne icone="observation" titre="Aucune fiche de leçon pour l’instant" />
+          </Section>
+        )}
+
         <Section titre="Dossier">
           <Ligne
             icone="document"
             titre="Pièces du dossier"
             sousTitre={formatPiecesManquantes(eleve.piecesManquantes.length)}
             sousTitreAlerte={eleve.piecesManquantes.length > 0}
-            onPress={() => {}}
-          />
-          <Ligne
-            icone="observation"
-            titre="Observations"
-            sousTitre={
-              derniere
-                ? `Dernière le ${formatDateCourte(derniere.date)} · ${derniere.visibleParEleve ? 'visible par l’élève' : 'réservée aux enseignants'}`
-                : 'Aucune observation'
-            }
             onPress={() => {}}
           />
           <Ligne icone="livret" titre="Livret d’apprentissage" onPress={() => {}} />

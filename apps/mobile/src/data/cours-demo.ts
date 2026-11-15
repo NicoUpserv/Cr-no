@@ -20,6 +20,7 @@ export const coursInsertionDemo: Cours = {
   id: 'cours-insertion-voie-rapide',
   titre: 'Insertion sur voie rapide',
   competence: 'C3',
+  sousCompetencesIds: ['c3-e', 'c2-c'],
   demonstration: true,
   videos: [
     { titre: 'La voie d’accélération', source: require('../../assets/demo/insertion-1.mp4'), dureeSecondes: 8 },

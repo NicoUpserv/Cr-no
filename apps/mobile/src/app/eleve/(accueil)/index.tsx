@@ -18,8 +18,10 @@ import {
   trouverEleve,
   trouverMoniteur,
 } from '@/data/depot';
+import { DetailFiche } from '@/components/detail-fiche';
 import { alerteEleve } from '@/features/cours/alertes';
-import { formatDans, formatHeure, formatJour, formatPiecesManquantes } from '@/lib/format';
+import { formatDans, formatDateCourte, formatHeure, formatJour, formatPiecesManquantes } from '@/lib/format';
+import { useFichesVueEleve } from '@/lib/fiches-lecon';
 import { ouvrirItineraire } from '@/lib/itineraire';
 import { useSuiviCours } from '@/lib/suivi-cours';
 
@@ -30,6 +32,8 @@ export default function AccueilEleve() {
   const lecon = eleve ? prochaineLecon(eleve.id, maintenant) : undefined;
   const cours = trouverCours(lecon?.cours?.coursId);
   const { suivi } = useSuiviCours(eleve?.id ?? '', cours?.id);
+  // Vue élève : l'observation interne et les signalements ne sont jamais affichés.
+  const [derniereFiche] = useFichesVueEleve(eleve?.id ?? '');
   if (!eleve) return null;
 
   const moniteur = lecon ? trouverMoniteur(lecon.moniteurId) : undefined;
@@ -77,6 +81,14 @@ export default function AccueilEleve() {
             ) : null}
             <Ligne icone="signature" titre="Signer ma présence (CPF)" sousTitre="Disponible au début de ta leçon" />
           </Section>
+        ) : null}
+
+        {derniereFiche ? (
+          <DetailFiche
+            vue="eleve"
+            fiche={derniereFiche}
+            titre={`Ta dernière leçon · L${derniereFiche.numeroLecon} · ${formatDateCourte(derniereFiche.date)}`}
+          />
         ) : null}
 
         <Section titre="Ma progression" forme="libre">

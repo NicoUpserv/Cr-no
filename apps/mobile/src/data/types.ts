@@ -69,16 +69,6 @@ export type Lecon = {
   cours?: CoursPrealable;
 };
 
-export type Observation = {
-  id: string;
-  eleveId: string;
-  auteurId: string;
-  date: string;
-  texte: string;
-  /** false = note réservée aux enseignants. */
-  visibleParEleve: boolean;
-};
-
 /* ----- Disponibilités et préférences (utilisées par les tâches suivantes) ----- */
 
 /** 1 = lundi … 7 = dimanche (ISO 8601). */
