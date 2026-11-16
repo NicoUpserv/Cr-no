@@ -1,21 +1,18 @@
 /** Accueil de la direction : ce qui demande une décision, puis la journée. Vouvoiement. */
 import { Stack, useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Alert } from 'react-native';
-
 import { DemandesAbsence } from '@/components/demandes-absence';
+import { DocumentsAVerifier } from '@/components/documents-a-verifier';
 import { Ecran, Ligne, Section } from '@/components/ui';
 import {
-  documentsAValider,
   elevesPretsPourLExamen,
   infosAutoEcole,
   listerMoniteurs,
   trouverEleve,
   trouverMoniteur,
 } from '@/data/depot';
-import type { DocumentRecu } from '@/data/types';
 import { dernierSignalement } from '@/features/fiches/fiche';
-import { formatDateCourte, formatHeure, formatIlYA } from '@/lib/format';
+import { useDossier } from '@/lib/dossier';
+import { formatDateCourte, formatHeure } from '@/lib/format';
 import { dateLocale } from '@/features/planning/creneaux';
 import { leconsDuJour } from '@/features/planning/lecons';
 import { useFichesEquipe } from '@/lib/fiches-lecon';
@@ -30,23 +27,25 @@ export default function AccueilDirection() {
     const s = dernierSignalement(fiches.filter((f) => f.eleveId === eleveId));
     return s ? [s] : [];
   });
-  const [documents, setDocuments] = useState<DocumentRecu[]>(documentsAValider);
+  const dossier = useDossier();
+  const nonLus = dossier.conversations().reduce((n, c) => n + dossier.nonLus(c.eleveId, 'direction'), 0);
   const prets = elevesPretsPourLExamen();
   const lecons = leconsDuJour(toutes, dateLocale(maintenant));
-
-  const verifierDocument = (doc: DocumentRecu, nomEleve: string) => {
-    const retirer = () => setDocuments((liste) => liste.filter((d) => d.id !== doc.id));
-    Alert.alert(`${doc.titre} · ${nomEleve}`, 'Le document est-il lisible et conforme ?', [
-      { text: 'Annuler', style: 'cancel' },
-      { text: 'Refuser', style: 'destructive', onPress: retirer },
-      { text: 'Valider', onPress: retirer },
-    ]);
-  };
 
   return (
     <>
       <Stack.Screen options={{ title: infosAutoEcole().nom }} />
       <Ecran>
+        <Section>
+          <Ligne
+            icone="message"
+            titre="Messages des élèves"
+            sousTitre={nonLus > 0 ? `${nonLus} message${nonLus > 1 ? 's' : ''} non lu${nonLus > 1 ? 's' : ''}` : 'Aucun message non lu'}
+            sousTitreAlerte={nonLus > 0}
+            onPress={() => router.push('/direction/messages')}
+          />
+        </Section>
+
         {signalements.length > 0 ? (
           <Section titre="Signalements de l’équipe" pied="Observations internes marquées « À signaler » par un enseignant.">
             {signalements.map((s) => {
@@ -67,26 +66,7 @@ export default function AccueilDirection() {
 
         <DemandesAbsence titre="À décider : absences" />
 
-        <Section titre="À vérifier : documents reçus">
-          {documents.length === 0 ? (
-            <Ligne icone="valider" titre="Aucun document en attente" />
-          ) : (
-            documents.map((doc) => {
-              const eleve = trouverEleve(doc.eleveId);
-              const nom = eleve ? `${eleve.prenom} ${eleve.nom}` : 'Élève';
-              return (
-                <Ligne
-                  key={doc.id}
-                  icone="document"
-                  titre={`${nom} · ${doc.titre}`}
-                  sousTitre={`Reçu ${formatIlYA(doc.recuLe, maintenant)}`}
-                  onPress={() => verifierDocument(doc, nom)}
-                  accessibilityHint="Valider ou refuser le document"
-                />
-              );
-            })
-          )}
-        </Section>
+        <DocumentsAVerifier />
 
         <Section
           titre="Prêts pour l’examen"

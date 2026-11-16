@@ -4,10 +4,13 @@ import { Stack } from 'expo-router';
 import { Ecran, Ligne, Section } from '@/components/ui';
 import { idEleveConnecte, infosAutoEcole, trouverEleve } from '@/data/depot';
 import { libellesPermis } from '@/data/types';
+import { useDossier } from '@/lib/dossier';
 
 export default function MesInfos() {
   const eleve = trouverEleve(idEleveConnecte());
+  const dossier = useDossier();
   if (!eleve) return null;
+  const manquantes = dossier.piecesManquantes(eleve.id);
 
   return (
     <>
@@ -16,6 +19,7 @@ export default function MesInfos() {
         <Section titre="Identité">
           <Ligne titre={`${eleve.prenom} ${eleve.nom}`} sousTitre="Nom et prénom" />
           <Ligne icone="telephone" titre={eleve.telephone} sousTitre="Téléphone portable" />
+          <Ligne icone="accueil" titre={eleve.adresse} sousTitre="Adresse" />
         </Section>
 
         <Section titre="Ma formation">
@@ -24,13 +28,23 @@ export default function MesInfos() {
 
         <Section
           titre="Mon dossier"
-          pied="Envoie tes documents depuis ton téléphone : une photo lisible suffit. Ton auto-école les vérifie.">
-          {eleve.piecesManquantes.length === 0 ? (
+          pied="Touche une pièce pour l’envoyer : une photo lisible suffit. Seule ton auto-école la voit (dans la démo, l’envoi est simulé).">
+          {manquantes.length === 0 ? (
             <Ligne icone="valider" titre="Dossier complet" />
           ) : (
-            eleve.piecesManquantes.map((piece) => (
-              <Ligne key={piece} icone="document" titre={piece} sousTitre="Manquant · à envoyer" sousTitreAlerte />
-            ))
+            manquantes.map((piece) => {
+              const enVerif = dossier.statutPiece(eleve.id, piece) === 'en-verification';
+              return (
+                <Ligne
+                  key={piece}
+                  icone="document"
+                  titre={piece}
+                  sousTitre={enVerif ? 'Envoyée · en cours de vérification' : 'Manquante · touche pour l’envoyer'}
+                  sousTitreAlerte={!enVerif}
+                  onPress={enVerif ? undefined : () => dossier.envoyerPiece(eleve.id, piece)}
+                />
+              );
+            })
           )}
         </Section>
       </Ecran>

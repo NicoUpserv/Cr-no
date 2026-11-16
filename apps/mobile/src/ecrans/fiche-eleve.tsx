@@ -1,10 +1,11 @@
 /**
- * ÉCRAN DE RÉFÉRENCE — fiche élève vue par l'enseignant.
+ * ÉCRAN DE RÉFÉRENCE — fiche élève vue par l'enseignant et par la direction.
+ * Le dossier (pièces, relances) et les messages ne sont visibles que par la direction.
  * Sert de modèle pour tous les écrans : composants `@/components/ui`,
  * données via `@/data/depot`, formats via `@/lib/format`, aucun style en dur.
  */
-import { Stack, useLocalSearchParams } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { StyleSheet, Switch, View } from 'react-native';
 
 import {
   BandeProgression,
@@ -29,11 +30,16 @@ import { useCoursAReproposer, useFichesDeLEleve, useProgressionEleve } from '@/l
 import { ouvrirItineraire } from '@/lib/itineraire';
 import { usePlanning } from '@/lib/planning';
 import { useSuiviCours } from '@/lib/suivi-cours';
+import { useDossier } from '@/lib/dossier';
+import { useVerificationsEleve } from '@/lib/verifications';
 import { useTheme } from '@/theme/use-theme';
 
-export function EcranFicheEleve() {
+export function EcranFicheEleve({ vue }: { vue: 'enseignant' | 'direction' }) {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { espace } = useTheme();
+  const router = useRouter();
+  const dossier = useDossier();
+  const verifications = useVerificationsEleve(trouverEleve(id));
+  const { espace, couleurs } = useTheme();
   const eleve = trouverEleve(id);
   const { lecons: toutes, maintenant } = usePlanning();
   const lecon = eleve ? prochaineLecon(toutes, eleve.id, maintenant) : undefined;
@@ -135,15 +141,48 @@ export function EcranFicheEleve() {
           </Section>
         )}
 
-        <Section titre="Dossier">
-          <Ligne
-            icone="document"
-            titre="Pièces du dossier"
-            sousTitre={formatPiecesManquantes(eleve.piecesManquantes.length)}
-            sousTitreAlerte={eleve.piecesManquantes.length > 0}
-            onPress={() => {}}
-          />
+        <Section titre={vue === 'direction' ? 'Dossier' : 'Suivi'}>
+          {vue === 'direction' ? (
+            <>
+              <Ligne
+                icone="document"
+                titre="Pièces et relances"
+                sousTitre={formatPiecesManquantes(dossier.piecesManquantes(eleve.id).length)}
+                sousTitreAlerte={dossier.piecesManquantes(eleve.id).length > 0}
+                onPress={() => router.push({ pathname: '/direction/eleves/dossier', params: { id: eleve.id } })}
+              />
+              <Ligne
+                icone="message"
+                titre="Messages"
+                sousTitre={dossier.nonLus(eleve.id, 'direction') > 0 ? `${dossier.nonLus(eleve.id, 'direction')} non lu${dossier.nonLus(eleve.id, 'direction') > 1 ? 's' : ''}` : undefined}
+                sousTitreAlerte={dossier.nonLus(eleve.id, 'direction') > 0}
+                onPress={() => router.push({ pathname: '/direction/eleves/conversation', params: { eleveId: eleve.id } })}
+              />
+            </>
+          ) : null}
           <Ligne icone="livret" titre="Livret d’apprentissage" onPress={() => {}} />
+          <Ligne
+            icone="voiture"
+            titre="Vérifications intérieures et extérieures"
+            sousTitre={
+              verifications.c1Acquise
+                ? `Ouvertes (C1 acquise) · ${verifications.maitrisees.length} fiches maîtrisées`
+                : verifications.debloqueeParEnseignant
+                  ? `Ouvertes avant la fin de C1 · ${verifications.maitrisees.length} fiches maîtrisées`
+                  : 'Fermées jusqu’à la fin de C1'
+            }
+            aDroite={
+              verifications.c1Acquise ? undefined : (
+                <Switch
+                  value={verifications.debloqueeParEnseignant}
+                  onValueChange={verifications.basculerDeblocage}
+                  trackColor={{ false: couleurs.separateur, true: couleurs.teinte }}
+                  ios_backgroundColor={couleurs.separateur}
+                  accessibilityLabel="Ouvrir les vérifications à l’élève"
+                />
+              )
+            }
+          />
           <Ligne icone="telephone" titre="Appeler" sousTitre={eleve.telephone} onPress={() => {}} />
         </Section>
       </Ecran>

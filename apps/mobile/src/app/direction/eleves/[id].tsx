@@ -1,3 +1,5 @@
 import { EcranFicheEleve } from '@/ecrans/fiche-eleve';
 
-export default EcranFicheEleve;
+export default function FicheEleveDirection() {
+  return <EcranFicheEleve vue="direction" />;
+}

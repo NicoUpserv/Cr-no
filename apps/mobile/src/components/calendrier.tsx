@@ -24,8 +24,10 @@ export type ElementCalendrier = {
   fin: string;
   /** Libellé court (« Lina M. »). */
   titre: string;
-  /** `lecon` : bloc plein ; `libre` : créneau libre, en pointillés. */
-  type: 'lecon' | 'libre';
+  /** `lecon` : bloc plein ; `libre` : créneau libre, en pointillés ; `annulee` : leçon annulée, en jaune. */
+  type: 'lecon' | 'libre' | 'annulee';
+  /** Couleur du bloc d'une leçon (véhicule ou enseignant). Teinte de l'appli par défaut. */
+  couleur?: string;
   onPress?: () => void;
   accessibilityLabel?: string;
 };
@@ -92,7 +94,7 @@ export function VueSemaine({
   absents?: string[];
   onChoisirJour: (jour: string) => void;
 }) {
-  const { couleurs, espace, rayon } = useTheme();
+  const { couleurs, espace, rayon , calendrier } = useTheme();
   const { width } = useWindowDimensions();
   const largeurUtile = Math.min(width, 760) - 2 * espace.l - LARGEUR_HEURES;
   const largeurJour = largeurUtile / 7;
@@ -141,7 +143,12 @@ export function VueSemaine({
           ))}
         </View>
         {jours.map((jour) => {
-          const duJour = elements.filter((e) => dateLocale(e.debut) === jour);
+          const brut = elements.filter((e) => dateLocale(e.debut) === jour);
+          // Une leçon annulée prend toute la largeur : le créneau libre qu'elle a libéré n'est pas redessiné à côté.
+          const annulees = brut.filter((e) => e.type === 'annulee');
+          const duJour = brut.filter(
+            (e) => e.type !== 'libre' || !annulees.some((a) => new Date(a.debut) < new Date(e.fin) && new Date(e.debut) < new Date(a.fin)),
+          );
           const places = repartirEnColonnes(duJour);
           const absent = absents.includes(jour);
           return (
@@ -163,6 +170,8 @@ export function VueSemaine({
                 const { haut, hauteur: h } = positionDansJournee(e.debut, e.fin);
                 if (h === 0) return null;
                 const lecon = e.type === 'lecon';
+                const annulee = e.type === 'annulee';
+                const fond = lecon ? (e.couleur ?? couleurs.teinte) : annulee ? couleurs.attentionFond : couleurs.fond;
                 return (
                   <Pressable
                     key={e.id}
@@ -178,13 +187,16 @@ export function VueSemaine({
                         left: (colonne / colonnes) * largeurJour + 1,
                         width: largeurJour / colonnes - 2,
                         borderRadius: 4,
-                        backgroundColor: lecon ? couleurs.teinte : couleurs.fond,
-                        borderColor: lecon ? couleurs.teinte : couleurs.texteTertiaire,
-                        borderStyle: lecon ? 'solid' : 'dashed',
+                        backgroundColor: fond,
+                        borderColor: lecon ? fond : annulee ? couleurs.attentionPictogramme : couleurs.texteTertiaire,
+                        borderStyle: lecon || annulee ? 'solid' : 'dashed',
                       },
                     ]}>
-                    <Texte variante="calendrier" couleur={lecon ? couleurs.surTeinte : couleurs.texteSecondaire} numberOfLines={2}>
-                      {lecon ? e.titre : 'libre'}
+                    <Texte
+                      variante="calendrier"
+                      couleur={lecon ? calendrier.texte : annulee ? couleurs.attentionTexte : couleurs.texteSecondaire}
+                      numberOfLines={lecon ? 3 : 2}>
+                      {e.type === 'libre' ? 'libre' : e.titre}
                     </Texte>
                   </Pressable>
                 );
@@ -193,6 +205,36 @@ export function VueSemaine({
           );
         })}
       </View>
+    </View>
+  );
+}
+
+/* ---------- Légende des couleurs ---------- */
+
+export type EntreeLegende = { libelle: string; couleur: string; style?: 'plein' | 'pointille' };
+
+/** Légende sous la vue semaine : la couleur n'est jamais le seul repère, le texte reste dans les blocs. */
+export function LegendeCalendrier({ entrees }: { entrees: EntreeLegende[] }) {
+  const { couleurs, espace } = useTheme();
+  return (
+    <View style={[styles.legende, { paddingHorizontal: espace.l, paddingTop: espace.s, columnGap: espace.m, rowGap: espace.xs }]}>
+      {entrees.map((e) => (
+        <View key={e.libelle} style={[styles.rangee, styles.entreeLegende, { gap: espace.xs }]}>
+          <View
+            style={[
+              styles.carreLegende,
+              {
+                backgroundColor: e.style === 'pointille' ? 'transparent' : e.couleur,
+                borderColor: e.style === 'pointille' ? couleurs.texteTertiaire : e.couleur,
+                borderStyle: e.style === 'pointille' ? 'dashed' : 'solid',
+              },
+            ]}
+          />
+          <Texte variante="note" ton="secondaire">
+            {e.libelle}
+          </Texte>
+        </View>
+      ))}
     </View>
   );
 }
@@ -354,6 +396,9 @@ const styles = StyleSheet.create({
   absent: { position: 'absolute', left: 0, right: 0, textAlign: 'center' },
   bloc: { position: 'absolute', borderWidth: 1, paddingHorizontal: 2, paddingVertical: 1, overflow: 'hidden' },
   cellule: { flex: 1, alignItems: 'center' },
+  legende: { flexDirection: 'row', flexWrap: 'wrap' },
+  entreeLegende: { alignItems: 'center' },
+  carreLegende: { width: 12, height: 12, borderRadius: 3, borderWidth: 1 },
   centre: { textAlign: 'center' },
   caseMois: { minHeight: 52, paddingVertical: 4, gap: 2 },
   points: { flexDirection: 'row', height: 5 },

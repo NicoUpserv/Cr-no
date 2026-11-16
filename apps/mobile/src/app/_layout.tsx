@@ -4,10 +4,12 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
+import { FournisseurDossier } from '@/lib/dossier';
 import { FournisseurFichesLecon } from '@/lib/fiches-lecon';
 import { FournisseurPlanning } from '@/lib/planning';
 import { FournisseurProfil } from '@/lib/profil';
 import { FournisseurSuiviCours } from '@/lib/suivi-cours';
+import { FournisseurVerifications } from '@/lib/verifications';
 import { useTheme } from '@/theme/use-theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -40,10 +42,14 @@ export default function RacineLayout() {
       <FournisseurPlanning>
         <FournisseurSuiviCours>
           <FournisseurFichesLecon>
-            <ThemeProvider value={themeNavigation}>
-              <StatusBar style="auto" />
-              <Stack screenOptions={{ headerShown: false, animation: 'fade' }} />
-            </ThemeProvider>
+            <FournisseurDossier>
+              <FournisseurVerifications>
+                <ThemeProvider value={themeNavigation}>
+                  <StatusBar style="auto" />
+                  <Stack screenOptions={{ headerShown: false, animation: 'fade' }} />
+                </ThemeProvider>
+              </FournisseurVerifications>
+            </FournisseurDossier>
           </FournisseurFichesLecon>
         </FournisseurSuiviCours>
       </FournisseurPlanning>

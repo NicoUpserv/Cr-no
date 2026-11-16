@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Voiture 3D · vérifications</title>
+    <style>
+      :root {
+        --fond: #eef1f5;
+        --surface: #ffffff;
+        --texte: #14181f;
+        --texte2: #5b6472;
+        --teinte: #1d4e9e;
+        --jaune: #f2c230;
+        --separateur: #e3e6eb;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='clair']) {
+          --fond: #151920;
+          --surface: #1f242c;
+          --texte: #f1f3f6;
+          --texte2: #a9b1bc;
+          --teinte: #7fa7ec;
+          --separateur: #2c323c;
+        }
+      }
+      :root[data-theme='sombre'] {
+        --fond: #151920;
+        --surface: #1f242c;
+        --texte: #f1f3f6;
+        --texte2: #a9b1bc;
+        --teinte: #7fa7ec;
+        --separateur: #2c323c;
+      }
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      html, body { margin: 0; height: 100%; overflow: hidden; background: var(--fond); color: var(--texte);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+      #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+      .barre { position: fixed; left: 0; right: 0; top: 0; display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; scrollbar-width: none; }
+      .barre::-webkit-scrollbar { display: none; }
+      .puce { flex: none; border: 1px solid var(--separateur); background: var(--surface); color: var(--texte); border-radius: 18px;
+        min-height: 36px; padding: 0 14px; font-size: 15px; font-weight: 500; cursor: pointer; }
+      .puce[aria-pressed='true'] { background: var(--teinte); border-color: var(--teinte); color: var(--surface); }
+      .aide { position: fixed; left: 16px; right: 16px; bottom: 16px; text-align: center; font-size: 13px; color: var(--texte2); pointer-events: none; }
+      .panneau { position: fixed; left: 12px; right: 12px; bottom: 12px; max-width: 520px; margin: 0 auto; background: var(--surface);
+        border-radius: 14px; padding: 14px 16px 12px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18); display: none; }
+      .panneau.visible { display: block; }
+      .panneau h2 { margin: 0 32px 2px 0; font-size: 17px; }
+      .panneau .compte { color: var(--texte2); font-size: 14px; margin-bottom: 8px; }
+      .panneau ul { margin: 0; padding: 0; list-style: none; max-height: 30vh; overflow-y: auto; }
+      .panneau li { font-size: 14px; line-height: 1.35; padding: 7px 0; border-top: 1px solid var(--separateur); }
+      .panneau li b { font-variant-numeric: tabular-nums; margin-right: 6px; }
+      .panneau .fermer { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; border: 0; background: none; color: var(--texte2);
+        font-size: 22px; cursor: pointer; }
+      .panneau .action { display: none; width: 100%; margin-top: 10px; min-height: 44px; border: 0; border-radius: 12px; background: var(--teinte);
+        color: var(--surface); font-size: 16px; font-weight: 600; cursor: pointer; }
+      .dans-appli .panneau .action { display: block; }
+      .legende-video { position: fixed; left: 6%; right: 6%; bottom: 6%; display: none; text-align: center; }
+      .legende-video span { display: inline; background: rgba(20, 24, 31, 0.82); color: #fff; font-size: 30px; line-height: 1.5; font-weight: 600;
+        padding: 6px 14px; border-radius: 8px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+      .titre-video { position: fixed; left: 5%; top: 5%; display: none; background: #f2c230; color: #14181f; font-weight: 800; font-size: 26px;
+        padding: 8px 16px; border-radius: 8px; }
+      .mode-video .barre, .mode-video .aide, .mode-video .panneau { display: none !important; }
+      .mode-video .legende-video, .mode-video .titre-video { display: block; }
+    </style>
+    <script type="importmap">
+      { "imports": { "three": "./lib/three.module.min.js" } }
+    </script>
+  </head>
+  <body>
+    <canvas id="scene" aria-label="Voiture 3D interactive"></canvas>
+    <div class="barre" role="toolbar" aria-label="Commandes de la voiture">
+      <button class="puce" data-action="vue" aria-pressed="false">Vue générale</button>
+      <button class="puce" data-action="portes" aria-pressed="false">Portes</button>
+      <button class="puce" data-action="capot" aria-pressed="false">Capot</button>
+      <button class="puce" data-action="coffre" aria-pressed="false">Coffre</button>
+      <button class="puce" data-action="feux" aria-pressed="false">Feux</button>
+      <button class="puce" data-action="interieur" aria-pressed="false">Poste de conduite</button>
+    </div>
+    <p class="aide" id="aide">Faites tourner la voiture avec le doigt. Touchez un point jaune pour voir les vérifications de cette zone.</p>
+    <section class="panneau" id="panneau" aria-live="polite">
+      <button class="fermer" id="fermer" aria-label="Fermer">×</button>
+      <h2 id="panneau-titre"></h2>
+      <div class="compte" id="panneau-compte"></div>
+      <ul id="panneau-liste"></ul>
+      <button class="action" id="panneau-action"></button>
+    </section>
+    <div class="titre-video" id="titre-video"></div>
+    <div class="legende-video" id="legende-video"><span id="legende-texte"></span></div>
+    <script type="module" src="./voiture.js"></script>
+  </body>
+</html>

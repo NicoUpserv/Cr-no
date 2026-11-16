@@ -1,16 +1,18 @@
 /**
  * Planning de l'enseignant, en jour / semaine / mois / année :
- * ses leçons, ses créneaux libres et ses absences. Vouvoiement.
+ * ses leçons (couleur = véhicule), ses créneaux libres, les leçons annulées et ses absences.
+ * S'ouvre sur la semaine ; toucher une leçon ouvre son détail (compte à rebours, prise en charge, élève). Vouvoiement.
  */
 import { Stack, useRouter } from 'expo-router';
 
-import { BarrePeriode, VueAnnee, VueMois, VueSemaine, type ElementCalendrier } from '@/components/calendrier';
+import { BarrePeriode, LegendeCalendrier, VueAnnee, VueMois, VueSemaine, type ElementCalendrier } from '@/components/calendrier';
 import { Cartouche, ChoixSegmente, Ecran, Ligne, Section } from '@/components/ui';
 import { idMoniteurConnecte, trouverEleve } from '@/data/depot';
 import { libellesMotifAbsence } from '@/data/types';
 import { compterParJour, joursSemaine, VUES } from '@/features/planning/calendrier';
-import { absenceLe } from '@/features/planning/creneaux';
+import { absenceLe, dateLocale } from '@/features/planning/creneaux';
 import { leconsDuJour, leconsDuMoniteur } from '@/features/planning/lecons';
+import { useCouleursPlanning } from '@/lib/couleurs-planning';
 import { formatHeure } from '@/lib/format';
 import { usePlanning } from '@/lib/planning';
 import { useCalendrier } from '@/lib/use-calendrier';
@@ -20,12 +22,14 @@ export default function PlanningEnseignant() {
   const planning = usePlanning();
   const { maintenant } = planning;
   const moniteurId = idMoniteurConnecte();
-  const cal = useCalendrier(maintenant);
+  const cal = useCalendrier(maintenant, 'semaine');
+  const teintes = useCouleursPlanning();
   const { date: jour } = cal;
 
   const siennes = leconsDuMoniteur(planning.lecons, moniteurId);
   const dispos = planning.disponibilites(moniteurId);
-  const ouvrirEleve = (eleveId: string) => router.push({ pathname: '/eleves/[id]', params: { id: eleveId } });
+  const ouvrirLecon = (leconId: string) => router.push({ pathname: '/planning/[leconId]', params: { leconId } });
+  const annulees = leconsDuMoniteur(planning.leconsAnnulees, moniteurId);
   const nomCourt = (eleveId: string) => {
     const e = trouverEleve(eleveId);
     return e ? `${e.prenom} ${e.nom.charAt(0)}.` : 'Élève';
@@ -39,8 +43,11 @@ export default function PlanningEnseignant() {
       fin: l.fin,
       titre: nomCourt(l.eleveId),
       type: 'lecon' as const,
-      onPress: () => ouvrirEleve(l.eleveId),
+      couleur: teintes.couleurVehicule(l),
+      onPress: () => ouvrirLecon(l.id),
+      accessibilityLabel: `${formatHeure(l.debut)}, ${nomCourt(l.eleveId)}`,
     })),
+    ...annulees.map((l) => ({ id: l.id, debut: l.debut, fin: l.fin, titre: `Annulée · ${nomCourt(l.eleveId)}`, type: 'annulee' as const })),
     ...semaine.flatMap((j) =>
       planning.creneauxLibres(moniteurId, j).map((c) => ({ id: `libre-${c.debut}`, debut: c.debut, fin: c.fin, titre: 'libre', type: 'libre' as const })),
     ),
@@ -77,7 +84,7 @@ export default function PlanningEnseignant() {
                       titre={`${formatHeure(lecon.debut)} → ${formatHeure(lecon.fin)} · ${eleve ? `${eleve.prenom} ${eleve.nom}` : 'Élève'}`}
                       sousTitre={`${lecon.lieuDepart.nom}${terminee ? ' · terminée' : ''}`}
                       aDroite={<Cartouche numero={lecon.numero} />}
-                      onPress={() => ouvrirEleve(lecon.eleveId)}
+                      onPress={() => ouvrirLecon(lecon.id)}
                     />
                   );
                 })
@@ -102,6 +109,14 @@ export default function PlanningEnseignant() {
             maintenant={maintenant}
             absents={semaine.filter((j) => absenceLe(dispos, j))}
             onChoisirJour={cal.ouvrirJour}
+          />
+        ) : null}
+        {cal.vue === 'semaine' ? (
+          <LegendeCalendrier
+            entrees={teintes.legendeVehicules(
+              siennes.filter((l) => semaine.includes(dateLocale(l.debut))),
+              { libres: true, annulees: annulees.some((l) => semaine.includes(dateLocale(l.debut))) },
+            )}
           />
         ) : null}
         {cal.vue === 'mois' ? (

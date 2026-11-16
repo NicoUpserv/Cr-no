@@ -1,12 +1,7 @@
-import { Stack } from 'expo-router';
-
-import { EtatVide } from '@/components/ui';
+/** Messages de l'élève avec son auto-école (relances du dossier comprises). Tutoiement. */
+import { idEleveConnecte } from '@/data/depot';
+import { EcranConversation } from '@/ecrans/conversation';
 
 export default function MessagesEleve() {
-  return (
-    <>
-      <Stack.Screen options={{ title: 'Messages' }} />
-      <EtatVide icone="message" titre="Aucun message" message="Les messages de ton auto-école et de tes enseignants apparaîtront ici." />
-    </>
-  );
+  return <EcranConversation eleveId={idEleveConnecte()} vue="eleve" />;
 }

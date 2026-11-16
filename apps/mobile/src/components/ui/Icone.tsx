@@ -36,6 +36,11 @@ export const icones = {
   cours: { ios: 'play.rectangle', android: 'smart_display', web: 'smart_display' },
   signature: { ios: 'signature', android: 'draw', web: 'draw' },
   ajouter: { ios: 'plus.circle.fill', android: 'add_circle', web: 'add_circle' },
+  envoyer: { ios: 'arrow.up.circle.fill', android: 'send', web: 'send' },
+  relancer: { ios: 'bell.badge', android: 'notifications_active', web: 'notifications_active' },
+  voiture: { ios: 'car.side', android: 'directions_car', web: 'directions_car' },
+  telecharger: { ios: 'arrow.down.doc', android: 'download', web: 'download' },
+  hasard: { ios: 'shuffle', android: 'shuffle', web: 'shuffle' },
 } as const satisfies Record<string, NomSymbole>;
 
 export type NomIcone = keyof typeof icones;

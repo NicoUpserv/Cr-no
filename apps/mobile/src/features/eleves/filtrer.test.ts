@@ -5,6 +5,8 @@ import { filtrerEleves, type FiltreEleves } from './filtrer';
 function creerEleve(infos: Pick<Eleve, 'id' | 'prenom' | 'nom'> & Partial<Eleve>): Eleve {
   return {
     telephone: '06 00 00 00 00',
+    adresse: '1 rue de la Paix, 13100 Aix-en-Provence',
+    inscritLe: '2026-11-01',
     permis: 'B',
     forfaitLecons: 20,
     sousCompetencesAcquisesIds: [],

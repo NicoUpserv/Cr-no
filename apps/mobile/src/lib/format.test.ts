@@ -1,4 +1,4 @@
-import { formatDans, formatHeure, formatJour, formatPiecesManquantes } from './format';
+import { formatDans, formatHeure, formatJour, formatPiecesManquantes, formatCompteARebours } from './format';
 
 const maintenant = new Date(2026, 10, 9, 13, 25); // lundi 9 novembre 2026, 13:25
 
@@ -23,5 +23,20 @@ describe('format', () => {
     expect(formatPiecesManquantes(0)).toBe('Dossier complet');
     expect(formatPiecesManquantes(1)).toBe('1 document manquant');
     expect(formatPiecesManquantes(2)).toBe('2 documents manquants');
+  });
+});
+
+describe('formatCompteARebours', () => {
+  const debut = new Date(2026, 10, 16, 10, 0);
+  const fin = new Date(2026, 10, 16, 11, 0);
+  it('affiche heures et minutes avant le début', () => {
+    expect(formatCompteARebours(debut, fin, new Date(2026, 10, 16, 8, 45))).toBe('Commence dans 1 h 15');
+    expect(formatCompteARebours(debut, fin, new Date(2026, 10, 16, 8, 0))).toBe('Commence dans 2 h');
+    expect(formatCompteARebours(debut, fin, new Date(2026, 10, 16, 9, 25))).toBe('Commence dans 35 min');
+    expect(formatCompteARebours(debut, fin, new Date(2026, 10, 13, 10, 0))).toBe('Commence dans 3 jours');
+  });
+  it('indique la leçon en cours puis terminée', () => {
+    expect(formatCompteARebours(debut, fin, new Date(2026, 10, 16, 10, 40))).toBe('En cours · fin dans 20 min');
+    expect(formatCompteARebours(debut, fin, new Date(2026, 10, 16, 11, 0))).toBe('Terminée');
   });
 });

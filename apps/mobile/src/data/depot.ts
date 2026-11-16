@@ -3,10 +3,13 @@
  * Plus tard : Supabase. Les écrans n'importent QUE ce fichier, jamais `mock.ts`.
  */
 import type { Cours } from '@/features/cours/types';
+import type { FicheVerification, VideoVerification } from '@/features/verifications/types';
 import type { CodeCompetence, FicheLecon, SousCompetence } from '@/features/fiches/types';
 
 import { coursInsertionDemo, coursPrioritesDemo } from './cours-demo';
 import { libellesCompetences, sousCompetencesB } from './remc';
+import { fichesVerification } from './verifications';
+import { videosVerification } from './videos-verifications';
 import {
   autoEcole,
   construireLecons,
@@ -16,10 +19,12 @@ import {
   eleveConnecteId,
   eleves,
   examensBlancs,
+  messagesDemo,
   meteoDemo,
   moniteurConnecteId,
   moniteurs,
   fichesDemo,
+  leconsAnnuleesDemo,
   lieuxAutoEcole,
   preferences,
 } from './mock';
@@ -32,6 +37,7 @@ import type {
   ExamenBlanc,
   Lecon,
   Lieu,
+  Message,
   Meteo,
   Moniteur,
   PreferencesEleve,
@@ -59,6 +65,11 @@ export function idMoniteurConnecte(): string {
  */
 export function leconsEnregistrees(maintenant = new Date()): Lecon[] {
   return construireLecons(maintenant);
+}
+
+/** Identifiants des leçons déjà annulées au démarrage de la démo. */
+export function leconsAnnuleesInitiales(): string[] {
+  return leconsAnnuleesDemo;
 }
 
 /** Lieux de rendez-vous proposés par l'auto-école. */
@@ -132,6 +143,13 @@ export function elevesPretsPourLExamen(): { eleve: Eleve; examen: ExamenBlanc }[
     });
 }
 
+/* ----- Messagerie élève ↔ auto-école ----- */
+
+/** Messages au démarrage de la démo (ensuite gérés par `lib/dossier`). */
+export function messagesInitiaux(): Message[] {
+  return messagesDemo;
+}
+
 /* ----- Cours avant la leçon ----- */
 
 const catalogueCours: Cours[] = [coursInsertionDemo, coursPrioritesDemo];
@@ -147,3 +165,33 @@ export function trouverCours(coursId: string | undefined): Cours | undefined {
 export function libelleCompetence(code: CodeCompetence): string {
   return libellesCompetences[code];
 }
+
+/* ----- Vérifications intérieures et extérieures (banque officielle) ----- */
+
+export function listerFichesVerification(): FicheVerification[] {
+  return fichesVerification;
+}
+
+export function trouverFicheVerification(numero: string | undefined): FicheVerification | undefined {
+  return fichesVerification.find((f) => f.numero === numero);
+}
+
+export function listerVideosVerification(): VideoVerification[] {
+  return videosVerification;
+}
+
+export function trouverVideoVerification(id: string | undefined): VideoVerification | undefined {
+  return videosVerification.find((v) => v.id === id);
+}
+
+/** Vidéos qui expliquent une fiche. */
+export function videosDeLaFiche(numero: string): VideoVerification[] {
+  return videosVerification.filter((v) => v.fiches.includes(numero));
+}
+
+/**
+ * PDF officiel à télécharger (copié dans `public/documents`, servi par le site web de la démo).
+ * Sur téléphone, il s'ouvre depuis l'adresse web de la démo.
+ */
+export const CHEMIN_PDF_VERIFICATIONS = '/documents/verifications-interieures-exterieures.pdf';
+export const ADRESSE_WEB_DEMO = 'https://creno-demo-7k3p.expo.app';

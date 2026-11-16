@@ -16,6 +16,16 @@ export const libellesPermis: Record<TypePermis, string> = {
   BE: 'Permis BE',
 };
 
+/** Véhicule utilisé pendant la leçon (code couleur du planning). */
+export type TypeVehicule = 'manuelle' | 'automatique' | 'moto' | 'remorque';
+
+export const libellesVehicule: Record<TypeVehicule, string> = {
+  manuelle: 'Boîte manuelle',
+  automatique: 'Boîte automatique',
+  moto: 'Moto',
+  remorque: 'Remorque (BE)',
+};
+
 export type CodeCompetence = 'C1' | 'C2' | 'C3' | 'C4';
 
 export type Lieu = {
@@ -34,6 +44,8 @@ export type Eleve = {
   prenom: string;
   nom: string;
   telephone: string;
+  /** Adresse du domicile (dépôt possible en fin de leçon, à la demande de l'élève). */
+  adresse: string;
   permis: TypePermis;
   /** Nombre de leçons prévues au forfait. */
   forfaitLecons: number;
@@ -44,6 +56,8 @@ export type Eleve = {
   sousCompetencesAcquisesIds: string[];
   piecesManquantes: string[];
   moniteursFavorisIds: string[];
+  /** Date d'inscription « YYYY-MM-DD » (point de départ des relances du dossier). */
+  inscritLe: string;
 };
 
 /** Cours à consulter par l'élève avant une leçon de conduite. */
@@ -61,8 +75,12 @@ export type Lecon = {
   moniteurId: string;
   debut: string;
   fin: string;
+  /** Lieu de prise en charge. */
   lieuDepart: Lieu;
+  /** Lieu de dépôt : le même que la prise en charge sauf demande de l'élève. */
   lieuFin: Lieu;
+  /** Consigne pour l'enseignant (« Élève à récupérer devant la gare »). */
+  observation?: string;
   cours?: CoursPrealable;
 };
 
@@ -149,6 +167,17 @@ export type DocumentRecu = {
   eleveId: string;
   titre: string;
   recuLe: string;
+};
+
+/** Message entre un élève et son auto-école (la direction). Les enseignants n'y ont pas accès. */
+export type Message = {
+  id: string;
+  eleveId: string;
+  de: 'eleve' | 'auto-ecole';
+  texte: string;
+  envoyeLe: string;
+  /** Relance du dossier (automatique ou envoyée par la direction). */
+  relance?: 'automatique' | 'manuelle';
 };
 
 export type ExamenBlanc = {

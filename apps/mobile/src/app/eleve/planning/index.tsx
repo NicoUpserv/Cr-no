@@ -1,7 +1,7 @@
 /** Planning de l'élève, en jour / semaine / mois / année : ses leçons, réservation et annulation. Tutoiement. */
 import { Stack, useRouter } from 'expo-router';
 
-import { BarrePeriode, VueAnnee, VueMois, VueSemaine } from '@/components/calendrier';
+import { BarrePeriode, VueAnnee, VueMois, VueSemaine, type ElementCalendrier } from '@/components/calendrier';
 import { Cartouche, ChoixSegmente, Ecran, Ligne, Section } from '@/components/ui';
 import { idEleveConnecte, trouverMoniteur } from '@/data/depot';
 import { compterParJour, joursSemaine, VUES } from '@/features/planning/calendrier';
@@ -13,10 +13,11 @@ import { useCalendrier } from '@/lib/use-calendrier';
 
 export default function PlanningEleve() {
   const router = useRouter();
-  const { lecons: toutes, maintenant } = usePlanning();
+  const { lecons: toutes, leconsAnnulees, maintenant } = usePlanning();
   const cal = useCalendrier(maintenant, 'semaine');
   const { date: jour } = cal;
   const siennes = leconsDeLEleve(toutes, idEleveConnecte());
+  const annulees = leconsDeLEleve(leconsAnnulees, idEleveConnecte());
   const ouvrir = (leconId: string) => router.push({ pathname: '/eleve/planning/[leconId]', params: { leconId } });
   const duJour = leconsDuJour(siennes, jour);
 
@@ -53,7 +54,8 @@ export default function PlanningEleve() {
         {cal.vue === 'semaine' ? (
           <VueSemaine
             jours={joursSemaine(jour)}
-            elements={siennes.map((l) => ({
+            elements={[
+              ...siennes.map((l): ElementCalendrier => ({
               id: l.id,
               debut: l.debut,
               fin: l.fin,
@@ -61,7 +63,9 @@ export default function PlanningEleve() {
               type: 'lecon' as const,
               onPress: () => ouvrir(l.id),
               accessibilityLabel: `Leçon ${l.numero} à ${formatHeure(l.debut)}`,
-            }))}
+              })),
+              ...annulees.map((l): ElementCalendrier => ({ id: l.id, debut: l.debut, fin: l.fin, titre: 'Annulée', type: 'annulee', accessibilityLabel: `Leçon annulée à ${formatHeure(l.debut)}` })),
+            ]}
             maintenant={maintenant}
             onChoisirJour={cal.ouvrirJour}
           />

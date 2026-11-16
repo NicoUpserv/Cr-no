@@ -48,6 +48,29 @@ export function formatDans(debut: Date | string, fin: Date | string, maintenant 
   return `dans ${jours} jour${jours > 1 ? 's' : ''}`;
 }
 
+/**
+ * Compte à rebours d'une leçon, mis à jour chaque minute :
+ * « Commence dans 1 h 15 », « Commence dans 35 min », « Commence dans 3 jours », « En cours · fin dans 20 min », « Terminée ».
+ */
+export function formatCompteARebours(debut: Date | string, fin: Date | string, maintenant = new Date()): string {
+  const d = typeof debut === 'string' ? new Date(debut) : debut;
+  const f = typeof fin === 'string' ? new Date(fin) : fin;
+  if (maintenant >= f) return 'Terminée';
+  const duree = (cible: Date) => {
+    const minutes = Math.max(1, Math.ceil((cible.getTime() - maintenant.getTime()) / 60_000));
+    if (minutes < 60) return `${minutes} min`;
+    if (minutes < 24 * 60) {
+      const h = Math.floor(minutes / 60);
+      const m = minutes % 60;
+      return m === 0 ? `${h} h` : `${h} h ${String(m).padStart(2, '0')}`;
+    }
+    const jours = Math.round(minutes / (24 * 60));
+    return `${jours} jour${jours > 1 ? 's' : ''}`;
+  };
+  if (maintenant >= d) return `En cours · fin dans ${duree(f)}`;
+  return `Commence dans ${duree(d)}`;
+}
+
 /** « il y a 5 min », « il y a 3 h », « il y a 2 jours » */
 export function formatIlYA(date: Date | string, maintenant = new Date()): string {
   const d = typeof date === 'string' ? new Date(date) : date;

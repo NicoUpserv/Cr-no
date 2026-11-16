@@ -5,6 +5,7 @@
  */
 import type {
   AutoEcole,
+  Message,
   DemandeAbsence,
   DisponibilitesMoniteur,
   DocumentRecu,
@@ -50,72 +51,91 @@ const competencesB = (acquises: [number, number, number, number]) =>
       .map((s) => s.id),
   );
 
+/** Date « YYYY-MM-DD » décalée de `jours` par rapport à aujourd'hui. */
+const dans = (jours: number) => {
+  const d = new Date();
+  d.setDate(d.getDate() + jours);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
 export const eleves: Eleve[] = [
   {
     id: 'e-morel',
     prenom: 'Lina',
     nom: 'Morel',
     telephone: '06 12 34 56 78',
+    adresse: '8 rue des Cordeliers, 13100 Aix-en-Provence',
     permis: 'B',
     forfaitLecons: 20,
     sousCompetencesAcquisesIds: competencesB([6, 5, 3, 0]),
     piecesManquantes: ['Justificatif de domicile', 'Attestation ASSR 2'],
     moniteursFavorisIds: ['m-benali'],
+    inscritLe: dans(-12),
   },
   {
     id: 'e-riva',
     prenom: 'Tom',
     nom: 'Riva',
     telephone: '06 98 76 54 32',
+    adresse: '21 avenue Saint-Jérôme, 13100 Aix-en-Provence',
     permis: 'B-AAC',
     forfaitLecons: 20,
     sousCompetencesAcquisesIds: competencesB([2, 0, 0, 0]),
     piecesManquantes: [],
     moniteursFavorisIds: ['m-roux'],
+    inscritLe: dans(-60),
   },
   {
     id: 'e-haddad',
     prenom: 'Inès',
     nom: 'Haddad',
     telephone: '07 11 22 33 44',
+    adresse: '5 boulevard du Roi René, 13100 Aix-en-Provence',
     permis: 'B',
     forfaitLecons: 25,
     sousCompetencesAcquisesIds: competencesB([6, 7, 7, 4]),
     piecesManquantes: [],
     moniteursFavorisIds: ['m-benali', 'm-ortiz'],
+    inscritLe: dans(-90),
   },
   {
     id: 'e-petit',
     prenom: 'Hugo',
     nom: 'Petit',
     telephone: '06 55 44 33 22',
+    adresse: '47 route de Galice, 13090 Aix-en-Provence',
     permis: 'B-auto',
     forfaitLecons: 13,
     sousCompetencesAcquisesIds: competencesB([6, 4, 0, 0]),
     piecesManquantes: ['Photo d’identité'],
     moniteursFavorisIds: [],
+    inscritLe: dans(-40),
   },
   {
     id: 'e-benhamou',
     prenom: 'Sarah',
     nom: 'Benhamou',
     telephone: '06 77 88 99 00',
+    adresse: '3 rue Manuel, 13100 Aix-en-Provence',
     permis: 'B-CS',
     forfaitLecons: 20,
     sousCompetencesAcquisesIds: competencesB([6, 7, 5, 0]),
     piecesManquantes: [],
     moniteursFavorisIds: ['m-benali'],
+    inscritLe: dans(-75),
   },
   {
     id: 'e-nguyen',
     prenom: 'Julien',
     nom: 'Nguyen',
     telephone: '07 66 55 44 33',
+    adresse: '16 avenue de l’Europe, 13090 Aix-en-Provence',
     permis: 'A2',
     forfaitLecons: 20,
     sousCompetencesAcquisesIds: competencesB([4, 1, 0, 0]),
     piecesManquantes: ['Attestation ASSR 2', 'Pièce d’identité'],
     moniteursFavorisIds: ['m-ortiz'],
+    inscritLe: dans(-5),
   },
 ];
 
@@ -213,7 +233,8 @@ function leconsDeBase(maintenant: Date): Lecon[] {
       moniteurId: 'm-benali',
       ...creneau(maintenant, 0, 0),
       lieuDepart: lieux.gare,
-      lieuFin: lieux.zola,
+      lieuFin: lieux.gare,
+      observation: 'Élève à récupérer devant la gare, sortie principale.',
       cours: { coursId: 'cours-insertion-voie-rapide', envoyeLe: creneau(maintenant, -2, 0).debut },
     },
     {
@@ -232,7 +253,8 @@ function leconsDeBase(maintenant: Date): Lecon[] {
       moniteurId: 'm-benali',
       ...creneau(maintenant, 0, 2),
       lieuDepart: lieux.zola,
-      lieuFin: lieux.pontArc,
+      lieuFin: lieux.zola,
+      observation: 'Attendre devant le portail du lycée, côté parking.',
     },
     {
       id: 'l-benhamou-12',
@@ -260,6 +282,17 @@ function leconsDeBase(maintenant: Date): Lecon[] {
       ...creneau(maintenant, 0, 3),
       lieuDepart: lieux.agence,
       lieuFin: lieux.gare,
+      observation: 'Dépôt à la gare demandé par l’élève (train à prendre).',
+    },
+    // Leçon annulée par l'élève (affichée en jaune dans le planning, son créneau redevient libre).
+    {
+      id: 'l-benhamou-annulee',
+      numero: 0,
+      eleveId: 'e-benhamou',
+      moniteurId: 'm-benali',
+      ...creneau(maintenant, 1, 3),
+      lieuDepart: lieux.agence,
+      lieuFin: lieux.agence,
     },
     {
       id: 'l-riva-3',
@@ -311,6 +344,9 @@ export const fichesDemo: FicheLecon[] = [
   },
 ];
 
+/** Leçons annulées au démarrage de la démo. */
+export const leconsAnnuleesDemo = ['l-benhamou-annulee'];
+
 export const disponibilites: DisponibilitesMoniteur[] = [
   {
     moniteurId: 'm-benali',
@@ -357,12 +393,6 @@ export const preferences: PreferencesEleve[] = [
   { eleveId: 'e-riva', creneaux: [{ jour: 6, debut: '09:00', fin: '12:00' }], moniteursFavorisIds: ['m-roux'] },
 ];
 
-const dans = (jours: number) => {
-  const d = new Date();
-  d.setDate(d.getDate() + jours);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-};
-
 export const demandesAbsence: DemandeAbsence[] = [
   { id: 'da-1', moniteurId: 'm-roux', du: dans(2), au: dans(3), motif: 'maladie', justificatifJoint: true, statut: 'en-attente' },
   { id: 'da-2', moniteurId: 'm-ortiz', du: dans(20), au: dans(27), motif: 'conges', justificatifJoint: false, statut: 'en-attente' },
@@ -376,4 +406,38 @@ export const documentsRecus: DocumentRecu[] = [
 export const examensBlancs: ExamenBlanc[] = [
   { id: 'eb-1', eleveId: 'e-haddad', evaluateurId: 'm-ortiz', date: dans(-1), reussi: true },
   { id: 'eb-2', eleveId: 'e-benhamou', evaluateurId: 'm-benali', date: dans(-4), reussi: false },
+];
+
+/** Messages élève ↔ auto-école (fictifs). Lina a reçu les relances automatiques J+3 et J+7. */
+export const messagesDemo: Message[] = [
+  {
+    id: 'msg-1',
+    eleveId: 'e-morel',
+    de: 'auto-ecole',
+    texte: 'Bonjour Lina, il manque encore des pièces à ton dossier : justificatif de domicile, attestation ASSR 2. Envoie-les depuis Mes infos (une photo lisible suffit).',
+    envoyeLe: new Date(Date.now() - 216 * 3_600_000).toISOString(),
+    relance: 'automatique',
+  },
+  {
+    id: 'msg-2',
+    eleveId: 'e-morel',
+    de: 'eleve',
+    texte: 'Bonjour, je n’ai pas encore reçu mon attestation ASSR 2, je la demande au collège.',
+    envoyeLe: new Date(Date.now() - 195 * 3_600_000).toISOString(),
+  },
+  {
+    id: 'msg-3',
+    eleveId: 'e-morel',
+    de: 'auto-ecole',
+    texte: 'Bonjour Lina, il manque encore des pièces à ton dossier : justificatif de domicile, attestation ASSR 2. Envoie-les depuis Mes infos (une photo lisible suffit).',
+    envoyeLe: new Date(Date.now() - 120 * 3_600_000).toISOString(),
+    relance: 'automatique',
+  },
+  {
+    id: 'msg-4',
+    eleveId: 'e-nguyen',
+    de: 'eleve',
+    texte: 'Bonjour, est-ce que je peux décaler ma leçon de samedi à dimanche ?',
+    envoyeLe: new Date(Date.now() - 2 * 3_600_000).toISOString(),
+  },
 ];

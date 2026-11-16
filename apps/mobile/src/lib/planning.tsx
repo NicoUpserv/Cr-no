@@ -6,7 +6,7 @@
  */
 import { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
 
-import { demandesAbsenceEnAttente, disponibilitesInitiales, leconsEnregistrees } from '@/data/depot';
+import { demandesAbsenceEnAttente, disponibilitesInitiales, leconsAnnuleesInitiales, leconsEnregistrees } from '@/data/depot';
 import type { DemandeAbsence, DisponibilitesMoniteur, Lecon, Lieu } from '@/data/types';
 import { creneauxLibres, dateLocale, numeroterLecons, type Creneau } from '@/features/planning/creneaux';
 
@@ -15,6 +15,8 @@ type Contexte = {
   annulees: string[];
   dispos: DisponibilitesMoniteur[];
   demandesTraitees: string[];
+  depots: Record<string, Lieu>;
+  modifierDepot: (leconId: string, lieu: Lieu) => void;
   setReservations: (maj: (r: Lecon[]) => Lecon[]) => void;
   annuler: (leconId: string) => void;
   enregistrerDisponibilites: (d: DisponibilitesMoniteur) => void;
@@ -25,7 +27,9 @@ const ContextePlanning = createContext<Contexte | null>(null);
 
 export function FournisseurPlanning({ children }: { children: ReactNode }) {
   const [reservations, setReservations] = useState<Lecon[]>([]);
-  const [annulees, setAnnulees] = useState<string[]>([]);
+  const [annulees, setAnnulees] = useState<string[]>(leconsAnnuleesInitiales);
+  const [depots, setDepots] = useState<Record<string, Lieu>>({});
+  const modifierDepot = useCallback((leconId: string, lieu: Lieu) => setDepots((d) => ({ ...d, [leconId]: lieu })), []);
   const [dispos, setDispos] = useState<DisponibilitesMoniteur[]>(disponibilitesInitiales);
   const [demandesTraitees, setDemandesTraitees] = useState<string[]>([]);
 
@@ -54,6 +58,8 @@ export function FournisseurPlanning({ children }: { children: ReactNode }) {
         annulees,
         dispos,
         demandesTraitees,
+        depots,
+        modifierDepot,
         setReservations,
         annuler,
         enregistrerDisponibilites,
@@ -74,12 +80,21 @@ const dispoVide = (moniteurId: string): DisponibilitesMoniteur => ({
 export function usePlanning() {
   const contexte = useContext(ContextePlanning);
   if (!contexte) throw new Error('usePlanning doit être utilisé dans FournisseurPlanning');
-  const { reservations, annulees, dispos, demandesTraitees, setReservations, annuler, enregistrerDisponibilites, traiterDemande } =
-    contexte;
+  const {
+    reservations,
+    annulees,
+    dispos,
+    demandesTraitees,
+    depots,
+    modifierDepot,
+    setReservations,
+    annuler,
+    enregistrerDisponibilites,
+    traiterDemande,
+  } = contexte;
   const maintenant = new Date();
-  const lecons = numeroterLecons(
-    [...leconsEnregistrees(maintenant), ...reservations].filter((l) => !annulees.includes(l.id)),
-  );
+  const toutes = [...leconsEnregistrees(maintenant), ...reservations].map((l) => (depots[l.id] ? { ...l, lieuFin: depots[l.id] } : l));
+  const lecons = numeroterLecons(toutes.filter((l) => !annulees.includes(l.id)));
   const disponibilites = (moniteurId: string) => dispos.find((d) => d.moniteurId === moniteurId) ?? dispoVide(moniteurId);
 
   return {
@@ -87,6 +102,10 @@ export function usePlanning() {
     /** Toutes les leçons (enregistrées + réservées − annulées), numérotées par élève. */
     lecons,
     trouverLecon: (id: string) => lecons.find((l) => l.id === id),
+    /** Leçons annulées (affichées en jaune dans le planning ; leur créneau redevient libre). */
+    leconsAnnulees: toutes.filter((l) => annulees.includes(l.id)),
+    /** Change le lieu de dépôt (l'élève demande à être déposé ailleurs). */
+    modifierDepot,
     disponibilites,
     enregistrerDisponibilites,
     creneauxLibres: (moniteurId: string, date: string) =>

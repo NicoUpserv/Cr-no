@@ -1,3 +1,5 @@
 import { EcranFicheEleve } from '@/ecrans/fiche-eleve';
 
-export default EcranFicheEleve;
+export default function FicheEleveEnseignant() {
+  return <EcranFicheEleve vue="enseignant" />;
+}

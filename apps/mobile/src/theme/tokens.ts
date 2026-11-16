@@ -78,6 +78,18 @@ export type Couleurs = {
   ondulation: string;
 };
 
+/**
+ * Code couleur du planning (mêmes valeurs en mode clair et sombre) :
+ * assez sombres pour un texte blanc lisible (contraste ≥ 4,5:1).
+ */
+export const couleursCalendrier = {
+  /** Une couleur par véhicule. */
+  vehicules: { manuelle: '#2E7D32', automatique: '#1565C0', moto: '#B34700', remorque: '#5D4037' },
+  /** Une couleur par enseignant (planning de la direction), attribuée dans l'ordre de l'équipe. */
+  enseignants: ['#1565C0', '#2E7D32', '#AD1457', '#6A1B9A', '#B34700', '#00695C', '#C62828', '#4E342E'],
+  texte: '#FFFFFF',
+} as const;
+
 const clair: Couleurs = {
   fond: rampeClaire.n1,
   surface: rampeClaire.n0,

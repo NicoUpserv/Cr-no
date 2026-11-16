@@ -1,10 +1,12 @@
 import { useColorScheme } from 'react-native';
 
-import { cibleTactile, espace, palettes, rayon, typo, type Couleurs } from './tokens';
+import { cibleTactile, couleursCalendrier, espace, palettes, rayon, typo, type Couleurs } from './tokens';
 
 export type Theme = {
   sombre: boolean;
   couleurs: Couleurs;
+  /** Code couleur du planning (véhicules, enseignants). */
+  calendrier: typeof couleursCalendrier;
   espace: typeof espace;
   rayon: typeof rayon;
   typo: typeof typo;
@@ -20,6 +22,7 @@ export function useTheme(): Theme {
   return {
     sombre,
     couleurs: sombre ? palettes.sombre : palettes.clair,
+    calendrier: couleursCalendrier,
     espace,
     rayon,
     typo,

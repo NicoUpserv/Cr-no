@@ -26,7 +26,7 @@ const typoEnDur = {
 module.exports = defineConfig([
   expoConfig,
   {
-    ignores: ['dist/*', '.expo/*', '.impeccable/*'],
+    ignores: ['dist/*', '.expo/*', '.impeccable/*', 'public/*', 'scripts/*'],
   },
   {
     files: ['src/components/**/*.{ts,tsx}'],
